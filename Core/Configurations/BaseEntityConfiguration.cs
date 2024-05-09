@@ -8,22 +8,18 @@ public class BaseEntityConfiguration<TEntity> : IEntityTypeConfiguration<TEntity
 {
     public void Configure(EntityTypeBuilder<TEntity> builder)
     {
-        builder.HasKey(k => k.Id);
+        builder.HasKey(p => p.Id);
 
-        builder.Property<int>(p => p.Id)
-            .HasColumnName("id")
+        builder.Property(p => p.Id)
             .ValueGeneratedOnAdd();
 
-        builder.Property<bool>(p => p.IsDeleted)
-            .HasColumnName("is_deleted")
+        builder.Property(p => p.IsDeleted)
             .IsRequired();
 
-        builder.Property<DateTimeOffset>(p => p.Created)
-            .HasColumnName("created")
+        builder.Property(p => p.Created)
             .IsRequired();
 
-        builder.Property<DateTimeOffset>(p => p.Updated)
-            .HasColumnName("updated")
+        builder.Property(p => p.Updated)
             .IsRequired();
     }
 }

@@ -7,9 +7,9 @@ public class Chat : BaseEntity
 {
     public int? ProjectId { get; set; }
 
-    public virtual Project? Project { get; set; } = null!;
+    public virtual Project? Project { get; set; }
 
-    public virtual ICollection<Message> Messages { get; set; } = null!;
+    public virtual ICollection<Message> Messages { get; set; } = [];
 
-    public virtual ICollection<User> Participants { get; set; } = null!;
+    public virtual ICollection<User> Participants { get; set; } = [];
 }

@@ -1,13 +1,25 @@
-﻿using Core.Models.Questionnaires;
-using Microsoft.EntityFrameworkCore;
+﻿using Core.Models.Facets;
+using Core.Models.Questionnaires;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Questionnaires;
 
-public class QuestionConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : Question
+public class QuestionConfiguration<TEntity> : BaseEntityConfiguration<Question>
 {
-    public void Configure(EntityTypeBuilder<TEntity> builder)
+    public new void Configure(EntityTypeBuilder<Question> builder)
     {
-        throw new NotImplementedException();
+        base.Configure(builder);
+
+        builder.Property(p => p.Text)
+               .HasMaxLength(512)
+               .IsRequired();
+
+        builder.Property(p => p.IsRequired)
+               .IsRequired();
+
+        builder.HasOne<FacetItem>(p => p.Type)
+               .WithOne()
+               .HasForeignKey<Question>(p => p.TypeId)
+               .IsRequired();
     }
 }

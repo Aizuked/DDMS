@@ -6,14 +6,14 @@ public class Question : BaseEntity
 {
     public int Text { get; set; }
 
+    public bool IsRequired { get; set; }
+
     public int TypeId { get; set; }
 
     /// <summary>
     /// Перечисление QuestionType.
     /// </summary>
     public FacetItem Type { get; set; } = null!;
-
-    public bool IsRequired { get; set; }
 }
 
 // public enum QuestionType

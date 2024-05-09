@@ -7,11 +7,18 @@ namespace Core.Models.Identitiy;
 
 public class User : IdentityUser
 {
-    public int ProfilePictureId { get; set; }
+    public bool IsOnline { get; set; }
 
-    public virtual ICollection<Chat> UserChats { get; set; } = null!;
+    public DateTime? LastOnline { get; set; }
 
-    public virtual ICollection<LocalFile> LocalFiles { get; set; } = null!;
+    public int? ProfilePictureId { get; set; }
 
-    public virtual ICollection<Questionnaire> Questionnaires { get; set; } = null!;
+    public virtual LocalFile? ProfilePicture { get; set; }
+
+    public virtual ICollection<Chat> UserChats { get; set; } = [];
+
+    public virtual ICollection<LocalFile> LocalFiles { get; set; } = [];
+
+    public virtual ICollection<Questionnaire> Questionnaires { get; set; } = [];
+
 }

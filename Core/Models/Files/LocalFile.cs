@@ -6,11 +6,9 @@ public class LocalFile : BaseEntity
 {
     public string PhysicalPath { get; set; } = string.Empty;
 
-    public string PhysicalName { get; set; } = string.Empty;
+    public string DisplayName { get; set; } = string.Empty;
 
-    public string? DisplayName { get; set; }
-
-    public string? MimeType { get; set; }
+    public string MimeType { get; set; } = string.Empty;
 
     public long Size { get; set; }
 

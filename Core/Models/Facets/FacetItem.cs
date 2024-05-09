@@ -6,6 +6,8 @@ public class FacetItem : BaseEntity
 
     public string DisplayName { get; set; } = string.Empty;
 
+    public string Description { get; set; } = string.Empty;
+
     public int FacetId { get; set; }
 
     public virtual Facet Facet { get; set; } = null!;

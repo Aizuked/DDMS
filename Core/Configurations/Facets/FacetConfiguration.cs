@@ -1,13 +1,30 @@
 ﻿using Core.Models.Facets;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Facets;
 
-public class FacetConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : Facet
+public class FacetConfiguration : BaseEntityConfiguration<Facet>
 {
-    public void Configure(EntityTypeBuilder<TEntity> builder)
+    public new void Configure(EntityTypeBuilder<Facet> builder)
     {
-        throw new NotImplementedException();
+        base.Configure(builder);
+
+        builder.Property(p => p.IsSystem)
+               .IsRequired();
+
+        builder.Property(p => p.Code)
+               .HasMaxLength(128)
+               .IsRequired();
+
+        builder.Property(p => p.DisplayName)
+               .HasMaxLength(256)
+               .IsRequired();
+
+        builder.Property(p => p.Description)
+               .HasMaxLength(512)
+               .IsRequired();
+
+        builder.HasMany<FacetItem>(p => p.FacetItems)
+               .WithOne();
     }
 }

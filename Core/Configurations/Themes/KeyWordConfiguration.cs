@@ -1,13 +1,22 @@
 ﻿using Core.Models.Themes;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Themes;
 
-public class KeyWordConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : KeyWord
+public class KeyWordConfiguration : BaseEntityConfiguration<KeyWord>
 {
-    public void Configure(EntityTypeBuilder<TEntity> builder)
+    public new void Configure(EntityTypeBuilder<KeyWord> builder)
     {
-        throw new NotImplementedException();
+        base.Configure(builder);
+
+        builder.Property(p => p.Word)
+               .HasMaxLength(64)
+               .IsRequired();
+
+        builder.Property(p => p.IsApproved)
+               .IsRequired();
+
+        builder.Property(p => p.IsProven)
+               .IsRequired();
     }
 }

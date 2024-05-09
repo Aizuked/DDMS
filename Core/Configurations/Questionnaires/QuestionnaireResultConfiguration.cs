@@ -1,13 +1,26 @@
-﻿using Core.Models.Questionnaires;
-using Microsoft.EntityFrameworkCore;
+﻿using Core.Models.Identitiy;
+using Core.Models.Questionnaires;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Questionnaires;
 
-public class QuestionnaireResultConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : QuestionnaireResult
+public class QuestionnaireResultConfiguration : BaseEntityConfiguration<QuestionnaireResult>
 {
-    public void Configure(EntityTypeBuilder<TEntity> builder)
+    public new void Configure(EntityTypeBuilder<QuestionnaireResult> builder)
     {
-        throw new NotImplementedException();
+        base.Configure(builder);
+
+        builder.HasOne<User>(p => p.Interviewee)
+               .WithOne()
+               .HasForeignKey<QuestionnaireResult>(p => p.QuestionnaireId)
+               .IsRequired();
+
+        builder.HasOne<Questionnaire>(p => p.Questionnaire)
+               .WithOne()
+               .HasForeignKey<QuestionnaireResult>(p => p.QuestionnaireId)
+               .IsRequired();
+
+        builder.HasMany<Answer>(p => p.Answers)
+               .WithOne();
     }
 }

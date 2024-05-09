@@ -15,10 +15,10 @@ public class BaseEntity
     /// <summary>
     /// Дата и время создания.
     /// </summary>
-    public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset Created { get; set; } = DateTimeOffset.UtcNow;
 
     /// <summary>
     /// Дата и время последнего обновления.
     /// </summary>
-    public DateTimeOffset Updated { get; set; } = DateTimeOffset.Now;
+    public DateTimeOffset Updated { get; set; } = DateTimeOffset.UtcNow;
 }

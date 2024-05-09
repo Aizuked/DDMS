@@ -10,6 +10,8 @@ public class Project : BaseEntity
 
     public string DisplayName { get; set; } = string.Empty;
 
+    public bool IsPublic { get; set; }
+
     public int StudentId { get; set; }
 
     public virtual User Student { get; set; } = null!;
@@ -24,8 +26,6 @@ public class Project : BaseEntity
     /// Перечисление ProjectStatus.
     /// </summary>
     public FacetItem Status { get; set; } = null!;
-
-    public bool IsPublic { get; set; }
 
     public int ThemeId { get; set; }
 

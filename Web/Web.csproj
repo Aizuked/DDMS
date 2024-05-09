@@ -18,4 +18,19 @@
       <ProjectReference Include="..\Core\Core.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AspNetCoreHero.ToastNotification" Version="1.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Services\Chat\" />
+      <Folder Include="Services\Facets\" />
+      <Folder Include="Services\Files\" />
+      <Folder Include="Services\Identity\" />
+      <Folder Include="Services\Projects\" />
+      <Folder Include="Services\Questionnaires\" />
+      <Folder Include="Services\Themes\" />
+    </ItemGroup>
+
 </Project>

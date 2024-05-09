@@ -1,7 +1,9 @@
+using AspNetCoreHero.ToastNotification;
 using Core;
-using Core.Models;
 using Core.Models.Identitiy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
+using Web.Miscellanious;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,12 +32,22 @@ builder.Services.AddIdentity<User, string>(
     }
 ).AddEntityFrameworkStores<IdentityContext>();
 
+builder.Services.AddToastify(
+    options =>
+    {
+        options.DurationInSeconds = 5;
+        options.Position = Position.Right;
+        options.Gravity = Gravity.Bottom;
+    }
+);
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
 
@@ -48,6 +60,9 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
+
+app.UseExceptionHandler();
 
 app.Run();
