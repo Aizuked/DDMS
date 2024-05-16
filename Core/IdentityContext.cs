@@ -1,7 +1,11 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
-public class IdentityContext(DbContextOptions<IdentityContext> options) : IdentityDbContext<User>(options);
+public class IdentityContext : IdentityDbContext<User, IdentityRole<int>, int>
+{
+    public IdentityContext(DbContextOptions<IdentityContext> options) : base(options) { }
+}

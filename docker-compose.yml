@@ -1,12 +1,43 @@
 ﻿services:
-  webapplication1:
-    image: webapplication1
-    build:
-      context: .
-      dockerfile: WebApplication1/Dockerfile
-
   web:
     image: web
     build:
       context: .
       dockerfile: Web/Dockerfile
+    environment:
+      - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - Files__BasePath=${FILES_BASE_PATH}
+      - Files__Images__Dimensions__MaxWidth=${FILES_IMAGE_DIMENSIONS_MAX_WIDTH}
+      - Files__Images__Dimensions__MaxHeight=${FILES_IMAGE_DIMENSIONS_MAX_HEIGHT}
+    env_file:
+      - .env
+    ports:
+      - "9900:8080"
+    volumes:
+      - files:/app/files
+      - logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: ${PGSQL_USER}
+      POSTGRES_PASSWORD: ${PGSQL_PASSWORD}
+      POSTGRES_DATABASE: ddms
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=${PGSQL_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  files:
+  logs:
+  dbdata:

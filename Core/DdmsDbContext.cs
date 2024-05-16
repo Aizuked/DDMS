@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
-public class DdmsDbContext(DbContextOptions<DdmsDbContext> options) : DbContext(options)
+public class DdmsDbContext : DbContext
 {
+    public DdmsDbContext(DbContextOptions<DdmsDbContext> options) : base(options) { }
+
     public DbSet<Chat> Chats { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<Facet> Facets { get; set; }

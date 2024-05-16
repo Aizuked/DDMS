@@ -1,4 +1,4 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
 
 namespace Core.Models.Themes;
 

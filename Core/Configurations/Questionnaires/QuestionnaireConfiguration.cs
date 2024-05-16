@@ -1,5 +1,5 @@
 ﻿using Core.Models.Facets;
-using Core.Models.Identitiy;
+using Core.Models.Identity;
 using Core.Models.Questionnaires;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,13 +19,13 @@ public class QuestionnaireConfiguration : BaseEntityConfiguration<Questionnaire>
                .IsRequired();
 
         builder.HasOne<FacetItem>(p => p.Type)
-               .WithOne()
-               .HasForeignKey<Questionnaire>(p => p.TypeId)
+               .WithMany()
+               .HasForeignKey(p => p.TypeId)
                .IsRequired();
 
         builder.HasOne<User>(p => p.Author)
-               .WithOne()
-               .HasForeignKey<Questionnaire>(p => p.Author)
+               .WithMany()
+               .HasForeignKey(p => p.AuthorId)
                .IsRequired();
 
         builder.HasMany<Question>(p => p.Questions)

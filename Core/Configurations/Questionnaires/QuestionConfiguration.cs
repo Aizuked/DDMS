@@ -18,8 +18,8 @@ public class QuestionConfiguration<TEntity> : BaseEntityConfiguration<Question>
                .IsRequired();
 
         builder.HasOne<FacetItem>(p => p.Type)
-               .WithOne()
-               .HasForeignKey<Question>(p => p.TypeId)
+               .WithMany()
+               .HasForeignKey(p => p.TypeId)
                .IsRequired();
     }
 }

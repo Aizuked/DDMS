@@ -27,6 +27,7 @@ public class LocalFileGroupConfiguration : BaseEntityConfiguration<LocalFileGrou
         builder.Property(p => p.AllowedMimeTypes);
 
         builder.HasMany<LocalFile>(p => p.Files)
-               .WithOne();
+               .WithOne()
+               .HasForeignKey(p => p.LocalFileGroupId);
     }
 }

@@ -23,8 +23,8 @@ public class AnswerConfiguration : BaseEntityConfiguration<Answer>
         builder.Property(p => p.MultiSelected);
 
         builder.HasOne<Question>(p => p.Question)
-               .WithOne()
-               .HasForeignKey<Answer>(p => p.QuestionId)
+               .WithMany()
+               .HasForeignKey(p => p.QuestionId)
                .IsRequired();
     }
 }

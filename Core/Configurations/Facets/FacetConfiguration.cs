@@ -25,6 +25,7 @@ public class FacetConfiguration : BaseEntityConfiguration<Facet>
                .IsRequired();
 
         builder.HasMany<FacetItem>(p => p.FacetItems)
-               .WithOne();
+               .WithOne()
+               .HasForeignKey(p => p.FacetId);
     }
 }

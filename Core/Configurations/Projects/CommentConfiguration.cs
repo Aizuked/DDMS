@@ -1,4 +1,4 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
 using Core.Models.Projects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -19,7 +19,6 @@ public class CommentConfiguration : BaseEntityConfiguration<Comment>
 
         builder.HasOne<User>(p => p.Author)
                .WithOne()
-               .HasForeignKey<Comment>(p => p.AuthorId)
                .IsRequired();
     }
 }

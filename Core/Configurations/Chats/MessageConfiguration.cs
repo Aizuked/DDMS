@@ -1,14 +1,13 @@
 ﻿using Core.Models.Chats;
 using Core.Models.Files;
-using Core.Models.Identitiy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Chats;
 
-public class MessageConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> where TEntity : Message
+public class MessageConfiguration : IEntityTypeConfiguration<Message>
 {
-    public void Configure(EntityTypeBuilder<TEntity> builder)
+    public void Configure(EntityTypeBuilder<Message> builder)
     {
         builder.HasKey(p => p.Id);
 
@@ -31,12 +30,10 @@ public class MessageConfiguration<TEntity> : IEntityTypeConfiguration<TEntity> w
                .IsRequired();
 
         builder.HasOne<LocalFile>()
-               .WithOne()
-               .HasForeignKey<Message>(p => p.LocalFileId);
+               .WithOne();
 
-        builder.HasOne<User>(p => p.Sender)
-               .WithOne()
-               .HasForeignKey<Message>(p => p.SenderId)
-               .IsRequired();
+        builder.HasOne(p => p.Sender)
+               .WithMany()
+               .HasForeignKey(p => p.SenderId);
     }
 }

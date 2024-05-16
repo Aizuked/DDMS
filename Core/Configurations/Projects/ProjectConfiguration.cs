@@ -1,5 +1,4 @@
 ﻿using Core.Models.Facets;
-using Core.Models.Identitiy;
 using Core.Models.Projects;
 using Core.Models.Themes;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -23,22 +22,22 @@ public class ProjectConfiguration : BaseEntityConfiguration<Project>
         builder.Property(p => p.IsPublic)
                .IsRequired();
 
-        builder.HasOne<User>(p => p.Student)
+        builder.HasOne(p => p.Student)
                .WithOne()
                .HasForeignKey<Project>(p => p.StudentId)
                .IsRequired();
 
-        builder.HasOne<User>(p => p.Teacher)
-               .WithOne()
-               .HasForeignKey<Project>(p => p.TeacherId)
+        builder.HasOne(p => p.Teacher)
+               .WithMany()
+               .HasForeignKey(p => p.TeacherId)
                .IsRequired();
 
-        builder.HasOne<FacetItem>(p => p.Status)
-               .WithOne()
-               .HasForeignKey<Project>(p => p.StatusId)
+        builder.HasOne(p => p.Status)
+               .WithMany()
+               .HasForeignKey(p => p.StatusId)
                .IsRequired();
 
-        builder.HasOne<Theme>(p => p.Theme)
+        builder.HasOne(p => p.Theme)
                .WithOne()
                .HasForeignKey<Project>(p => p.ThemeId);
     }

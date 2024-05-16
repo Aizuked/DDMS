@@ -1,5 +1,4 @@
 ﻿using Core.Models.Files;
-using Core.Models.Identitiy;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Core.Configurations.Files;
@@ -25,14 +24,13 @@ public class LocalFileConfiguration : BaseEntityConfiguration<LocalFile>
         builder.Property(p => p.Size)
                .IsRequired();
 
-        builder.HasOne<User>(p => p.Uploader)
-               .WithOne()
-               .HasForeignKey<LocalFile>(p => p.UploaderId)
-               .IsRequired();
+        builder.HasOne(p => p.Uploader)
+               .WithMany(p => p.LocalFiles)
+               .HasForeignKey(p => p.UploaderId);
 
         builder.HasOne<LocalFileGroup>(p => p.LocalFileGroup)
-               .WithOne()
-               .HasForeignKey<LocalFile>(p => p.LocalFileGroupId)
+               .WithMany(p => p.Files)
+               .HasForeignKey(p => p.LocalFileGroupId)
                .IsRequired();
     }
 }

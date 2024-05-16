@@ -1,5 +1,5 @@
 ﻿using Core.Models.Facets;
-using Core.Models.Identitiy;
+using Core.Models.Identity;
 using Core.Models.Themes;
 
 namespace Core.Models.Projects;

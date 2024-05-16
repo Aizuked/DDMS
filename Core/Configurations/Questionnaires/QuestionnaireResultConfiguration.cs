@@ -1,4 +1,4 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
 using Core.Models.Questionnaires;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,13 +11,13 @@ public class QuestionnaireResultConfiguration : BaseEntityConfiguration<Question
         base.Configure(builder);
 
         builder.HasOne<User>(p => p.Interviewee)
-               .WithOne()
-               .HasForeignKey<QuestionnaireResult>(p => p.QuestionnaireId)
+               .WithMany()
+               .HasForeignKey(p => p.IntervieweeId)
                .IsRequired();
 
         builder.HasOne<Questionnaire>(p => p.Questionnaire)
-               .WithOne()
-               .HasForeignKey<QuestionnaireResult>(p => p.QuestionnaireId)
+               .WithMany()
+               .HasForeignKey(p => p.QuestionnaireId)
                .IsRequired();
 
         builder.HasMany<Answer>(p => p.Answers)

@@ -1,4 +1,4 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
 using Core.Models.Themes;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -20,12 +20,11 @@ public class ThemeConfiguration : BaseEntityConfiguration<Theme>
                .IsRequired();
 
         builder.HasOne<SuggestedTheme>(p => p.SelectedTheme)
-               .WithOne()
-               .HasForeignKey<Theme>(p => p.SelectedThemeId);
+               .WithOne();
 
         builder.HasOne<User>(p => p.Approver)
-               .WithOne()
-               .HasForeignKey<Theme>(p => p.ApproverId);
+               .WithMany()
+               .HasForeignKey(p => p.ApproverId);
 
         builder.HasMany<SuggestedTheme>(p => p.SuggestedThemes)
                .WithOne();

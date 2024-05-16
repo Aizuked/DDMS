@@ -1,9 +1,9 @@
 using AspNetCoreHero.ToastNotification;
 using Core;
-using Core.Models.Identitiy;
+using Core.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
-using Web.Miscellanious;
+using Web.Miscellaneous;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,18 +12,22 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<DdmsDbContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(DdmsDbContext)));
+        options.UseNpgsql(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+        );
     }
 );
 
 builder.Services.AddDbContext<IdentityContext>(
     options =>
     {
-        options.UseNpgsql(builder.Configuration.GetConnectionString(nameof(IdentityContext)));
+        options.UseNpgsql(
+            builder.Configuration.GetConnectionString("DefaultConnection")
+        );
     }
 );
 
-builder.Services.AddIdentity<User, string>(
+builder.Services.AddIdentity<User, IdentityRole<int>>(
     options =>
     {
         options.User.RequireUniqueEmail = true;
@@ -43,6 +47,8 @@ builder.Services.AddToastify(
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
+builder.Services.AddProblemDetails();
+
 
 var app = builder.Build();
 
@@ -51,18 +57,20 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+app.UseExceptionHandler();
+
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.EnsureMigrationOfContext<IdentityContext>();
+app.EnsureMigrationOfContext<DdmsDbContext>();
 
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"
+    pattern: "{controller=Base}/{action=TestString}/{id?}"
 );
-
-app.UseExceptionHandler();
 
 app.Run();

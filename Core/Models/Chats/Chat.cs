@@ -1,4 +1,4 @@
-﻿using Core.Models.Identitiy;
+﻿using Core.Models.Identity;
 using Core.Models.Projects;
 
 namespace Core.Models.Chats;

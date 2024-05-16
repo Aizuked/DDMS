@@ -1,5 +1,5 @@
 ﻿using Core.Models.Facets;
-using Core.Models.Identitiy;
+using Core.Models.Identity;
 using Core.Models.Projects;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -26,17 +26,17 @@ public class ProjectTaskConfiguration : BaseEntityConfiguration<ProjectTask>
         builder.Property(p => p.DateTimeEnd);
 
         builder.HasOne<ProjectTask>(p => p.ParentTask)
-               .WithOne()
-               .HasForeignKey<ProjectTask>(p => p.ParentTaskId);
+               .WithMany()
+               .HasForeignKey(p => p.ParentTaskId);
 
         builder.HasOne<FacetItem>(p => p.Status)
-               .WithOne()
-               .HasForeignKey<ProjectTask>(p => p.StatusId)
+               .WithMany()
+               .HasForeignKey(p => p.StatusId)
                .IsRequired();
 
         builder.HasOne<User>(p => p.Author)
-               .WithOne()
-               .HasForeignKey<ProjectTask>(p => p.AuthorId)
+               .WithMany()
+               .HasForeignKey(p => p.AuthorId)
                .IsRequired();
 
         builder.HasMany<Comment>(p => p.Comments)

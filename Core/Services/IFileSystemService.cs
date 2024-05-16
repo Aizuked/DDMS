@@ -4,5 +4,9 @@ namespace Core.Services;
 
 public interface IFileSystemService
 {
-    Task<LocalFile> StoreAsync(Stream stream, int uploaderId, bool isImage = false);
+    Task<LocalFile> StoreAsync(
+        Stream stream,
+        string fileExtension,
+        int uploaderId
+    );
 }
