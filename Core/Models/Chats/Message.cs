@@ -1,4 +1,4 @@
-﻿using Core.Models.Identity;
+﻿using Core.Models.Projects;
 
 namespace Core.Models.Chats;
 
@@ -6,7 +6,7 @@ public class Message
 {
     public long Id { get; set; }
 
-    public string? Content { get; set; }
+    public string? Content { get; set; } = string.Empty;
 
     public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
 
@@ -18,7 +18,7 @@ public class Message
 
     public int? LocalFileId { get; set; }
 
-    public int SenderId { get; set; }
+    public int? ProjectTaskId { get; set; }
 
-    public virtual User Sender { get; set; } = null!;
+    public virtual ProjectTask? ProjectTask { get; set; }
 }

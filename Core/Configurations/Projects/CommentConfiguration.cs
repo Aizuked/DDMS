@@ -20,5 +20,8 @@ public class CommentConfiguration : BaseEntityConfiguration<Comment>
         builder.HasOne<User>(p => p.Author)
                .WithOne()
                .IsRequired();
+
+        builder.HasMany(p => p.LocalFiles)
+               .WithOne();
     }
 }

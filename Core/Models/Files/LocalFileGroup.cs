@@ -13,7 +13,7 @@ public class LocalFileGroup : BaseEntity
     /// </summary>
     public long MaxSize { get; set; } = 5_242_880;
 
-    public ICollection<string> AllowedMimeTypes { get; set; } = [];
+    public virtual ICollection<string> AllowedMimeTypes { get; set; } = [];
 
     public virtual ICollection<LocalFile> Files { get; set; } = [];
 }

@@ -11,9 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Migrations
 {
-    [DbContext(typeof(DdmsDbContext))]
-    [Migration("20240514205457_Initial")]
-    partial class Initial
+    [DbContext(typeof(IdentityContext))]
+    [Migration("20240519121422_InitialIdentity")]
+    partial class InitialIdentity
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -64,7 +64,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Chats");
+                    b.ToTable("Chat");
                 });
 
             modelBuilder.Entity("Core.Models.Chats.Message", b =>
@@ -93,7 +93,7 @@ namespace Core.Migrations
                     b.Property<int?>("LocalFileId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SenderId")
+                    b.Property<int?>("ProjectTaskId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TimeStamp")
@@ -103,9 +103,9 @@ namespace Core.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Message");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.Facet", b =>
@@ -142,7 +142,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Facets");
+                    b.ToTable("Facet");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.FacetItem", b =>
@@ -181,7 +181,7 @@ namespace Core.Migrations
 
                     b.HasIndex("FacetId");
 
-                    b.ToTable("FacetItems");
+                    b.ToTable("FacetItem");
                 });
 
             modelBuilder.Entity("Core.Models.Files.LocalFile", b =>
@@ -191,6 +191,9 @@ namespace Core.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
@@ -213,6 +216,9 @@ namespace Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ProjectTaskId")
+                        .HasColumnType("integer");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -224,11 +230,15 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CommentId");
+
                     b.HasIndex("LocalFileGroupId");
+
+                    b.HasIndex("ProjectTaskId");
 
                     b.HasIndex("UploaderId");
 
-                    b.ToTable("LocalFiles");
+                    b.ToTable("LocalFile");
                 });
 
             modelBuilder.Entity("Core.Models.Files.LocalFileGroup", b =>
@@ -269,10 +279,10 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocalFileGroups");
+                    b.ToTable("LocalFileGroup");
                 });
 
-            modelBuilder.Entity("Core.Models.Identitiy.User", b =>
+            modelBuilder.Entity("Core.Models.Identity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -280,20 +290,36 @@ namespace Core.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("About")
+                        .HasColumnType("text");
+
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsOnline")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LastOnline")
                         .HasColumnType("timestamp with time zone");
@@ -304,11 +330,16 @@ namespace Core.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("NormalizedEmail")
+                    b.Property<string>("MiddleName")
                         .HasColumnType("text");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
                     b.Property<string>("NormalizedUserName")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("text");
@@ -329,11 +360,19 @@ namespace Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
-                        .HasColumnType("text");
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.Projects.Comment", b =>
@@ -372,7 +411,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Core.Models.Projects.Project", b =>
@@ -425,7 +464,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Project");
                 });
 
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
@@ -478,7 +517,7 @@ namespace Core.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("ProjectTasks");
+                    b.ToTable("ProjectTask");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Answer", b =>
@@ -528,7 +567,7 @@ namespace Core.Migrations
 
                     b.HasIndex("QuestionnaireResultId");
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answer");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Question", b =>
@@ -566,7 +605,7 @@ namespace Core.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Question");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>
@@ -605,7 +644,7 @@ namespace Core.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Questionnaires");
+                    b.ToTable("Questionnaire");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.QuestionnaireResult", b =>
@@ -637,7 +676,7 @@ namespace Core.Migrations
 
                     b.HasIndex("QuestionnaireId");
 
-                    b.ToTable("QuestionnaireResults");
+                    b.ToTable("QuestionnaireResult");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.KeyWord", b =>
@@ -674,7 +713,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("KeyWords");
+                    b.ToTable("KeyWord");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.SuggestedTheme", b =>
@@ -696,7 +735,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("SuggestedThemes");
+                    b.ToTable("SuggestedTheme");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.Theme", b =>
@@ -737,12 +776,144 @@ namespace Core.Migrations
 
                     b.HasIndex("SelectedThemeId");
 
-                    b.ToTable("Themes");
+                    b.ToTable("Theme");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
                 });
 
             modelBuilder.Entity("ChatUser", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", null)
+                    b.HasOne("Core.Models.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("ParticipantsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -770,13 +941,11 @@ namespace Core.Migrations
                         .WithMany("Messages")
                         .HasForeignKey("ChatId");
 
-                    b.HasOne("Core.Models.Identitiy.User", "Sender")
+                    b.HasOne("Core.Models.Projects.ProjectTask", "ProjectTask")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectTaskId");
 
-                    b.Navigation("Sender");
+                    b.Navigation("ProjectTask");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.FacetItem", b =>
@@ -792,13 +961,21 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Files.LocalFile", b =>
                 {
+                    b.HasOne("Core.Models.Projects.Comment", null)
+                        .WithMany("LocalFiles")
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("Core.Models.Files.LocalFileGroup", "LocalFileGroup")
                         .WithMany("Files")
                         .HasForeignKey("LocalFileGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Uploader")
+                    b.HasOne("Core.Models.Projects.ProjectTask", null)
+                        .WithMany("LocalFiles")
+                        .HasForeignKey("ProjectTaskId");
+
+                    b.HasOne("Core.Models.Identity.User", "Uploader")
                         .WithMany("LocalFiles")
                         .HasForeignKey("UploaderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -811,7 +988,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Projects.Comment", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -832,13 +1009,13 @@ namespace Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Student")
+                    b.HasOne("Core.Models.Identity.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Teacher")
+                    b.HasOne("Core.Models.Identity.User", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -861,7 +1038,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -916,7 +1093,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany("Questionnaires")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -935,7 +1112,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Questionnaires.QuestionnaireResult", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Interviewee")
+                    b.HasOne("Core.Models.Identity.User", "Interviewee")
                         .WithMany("QuestionnaireResults")
                         .HasForeignKey("IntervieweeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -968,7 +1145,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Themes.Theme", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Approver")
+                    b.HasOne("Core.Models.Identity.User", "Approver")
                         .WithMany()
                         .HasForeignKey("ApproverId");
 
@@ -979,6 +1156,57 @@ namespace Core.Migrations
                     b.Navigation("Approver");
 
                     b.Navigation("SelectedTheme");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("Core.Models.Identity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("Core.Models.Identity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Models.Identity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("Core.Models.Identity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Models.Chats.Chat", b =>
@@ -996,7 +1224,7 @@ namespace Core.Migrations
                     b.Navigation("Files");
                 });
 
-            modelBuilder.Entity("Core.Models.Identitiy.User", b =>
+            modelBuilder.Entity("Core.Models.Identity.User", b =>
                 {
                     b.Navigation("LocalFiles");
 
@@ -1005,11 +1233,18 @@ namespace Core.Migrations
                     b.Navigation("Questionnaires");
                 });
 
+            modelBuilder.Entity("Core.Models.Projects.Comment", b =>
+                {
+                    b.Navigation("LocalFiles");
+                });
+
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("LinkedTasks");
+
+                    b.Navigation("LocalFiles");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>

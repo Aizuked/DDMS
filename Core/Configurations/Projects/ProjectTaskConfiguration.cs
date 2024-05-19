@@ -25,24 +25,27 @@ public class ProjectTaskConfiguration : BaseEntityConfiguration<ProjectTask>
 
         builder.Property(p => p.DateTimeEnd);
 
-        builder.HasOne<ProjectTask>(p => p.ParentTask)
+        builder.HasOne(p => p.ParentTask)
                .WithMany()
                .HasForeignKey(p => p.ParentTaskId);
 
-        builder.HasOne<FacetItem>(p => p.Status)
+        builder.HasOne(p => p.Status)
                .WithMany()
                .HasForeignKey(p => p.StatusId)
                .IsRequired();
 
-        builder.HasOne<User>(p => p.Author)
+        builder.HasOne(p => p.Author)
                .WithMany()
                .HasForeignKey(p => p.AuthorId)
                .IsRequired();
 
-        builder.HasMany<Comment>(p => p.Comments)
+        builder.HasMany(p => p.Comments)
                .WithOne();
 
-        builder.HasMany<ProjectTask>(p => p.LinkedTasks)
+        builder.HasMany(p => p.LinkedTasks)
                .WithMany();
+
+        builder.HasMany(p => p.LocalFiles)
+               .WithOne();
     }
 }

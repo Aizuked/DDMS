@@ -57,6 +57,11 @@ namespace Core.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    FirstName = table.Column<string>(type: "text", nullable: false),
+                    MiddleName = table.Column<string>(type: "text", nullable: true),
+                    LastName = table.Column<string>(type: "text", nullable: false),
+                    About = table.Column<string>(type: "text", nullable: true),
+                    JobTitle = table.Column<string>(type: "text", nullable: true),
                     IsOnline = table.Column<bool>(type: "boolean", nullable: false),
                     LastOnline = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ProfilePictureId = table.Column<int>(type: "integer", nullable: true),
@@ -101,39 +106,6 @@ namespace Core.Migrations
                         name: "FK_FacetItems_Facets_FacetId",
                         column: x => x.FacetId,
                         principalTable: "Facets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "LocalFiles",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PhysicalPath = table.Column<string>(type: "text", nullable: false),
-                    DisplayName = table.Column<string>(type: "text", nullable: false),
-                    MimeType = table.Column<string>(type: "text", nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    UploaderId = table.Column<int>(type: "integer", nullable: false),
-                    LocalFileGroupId = table.Column<int>(type: "integer", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LocalFiles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_LocalFiles_LocalFileGroups_LocalFileGroupId",
-                        column: x => x.LocalFileGroupId,
-                        principalTable: "LocalFileGroups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_LocalFiles_User_UploaderId",
-                        column: x => x.UploaderId,
-                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -299,6 +271,51 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LocalFiles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PhysicalPath = table.Column<string>(type: "text", nullable: false),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
+                    MimeType = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    UploaderId = table.Column<int>(type: "integer", nullable: false),
+                    LocalFileGroupId = table.Column<int>(type: "integer", nullable: false),
+                    CommentId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LocalFiles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_LocalFileGroups_LocalFileGroupId",
+                        column: x => x.LocalFileGroupId,
+                        principalTable: "LocalFileGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
+                        principalTable: "ProjectTasks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_User_UploaderId",
+                        column: x => x.UploaderId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Answers",
                 columns: table => new
                 {
@@ -384,7 +401,7 @@ namespace Core.Migrations
                     IsReceived = table.Column<bool>(type: "boolean", nullable: false),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     LocalFileId = table.Column<int>(type: "integer", nullable: true),
-                    SenderId = table.Column<int>(type: "integer", nullable: false),
+                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
                     ChatId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
@@ -396,11 +413,10 @@ namespace Core.Migrations
                         principalTable: "Chats",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Messages_User_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_Messages_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
+                        principalTable: "ProjectTasks",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -547,9 +563,19 @@ namespace Core.Migrations
                 column: "ThemeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_LocalFiles_CommentId",
+                table: "LocalFiles",
+                column: "CommentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LocalFiles_LocalFileGroupId",
                 table: "LocalFiles",
                 column: "LocalFileGroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LocalFiles_ProjectTaskId",
+                table: "LocalFiles",
+                column: "ProjectTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocalFiles_UploaderId",
@@ -562,9 +588,9 @@ namespace Core.Migrations
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_SenderId",
+                name: "IX_Messages_ProjectTaskId",
                 table: "Messages",
-                column: "SenderId");
+                column: "ProjectTaskId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_StatusId",
@@ -694,9 +720,6 @@ namespace Core.Migrations
                 name: "ChatUser");
 
             migrationBuilder.DropTable(
-                name: "Comments");
-
-            migrationBuilder.DropTable(
                 name: "KeyWords");
 
             migrationBuilder.DropTable(
@@ -712,7 +735,7 @@ namespace Core.Migrations
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "ProjectTasks");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "LocalFileGroups");
@@ -722,6 +745,9 @@ namespace Core.Migrations
 
             migrationBuilder.DropTable(
                 name: "Questionnaires");
+
+            migrationBuilder.DropTable(
+                name: "ProjectTasks");
 
             migrationBuilder.DropTable(
                 name: "Projects");

@@ -18,7 +18,7 @@ public class Theme : BaseEntity
 
     public User? Approver { get; set; }
 
-    public ICollection<SuggestedTheme> SuggestedThemes { get; set; } = [];
+    public virtual ICollection<SuggestedTheme> SuggestedThemes { get; set; } = [];
 
-    public ICollection<KeyWord> KeyWords { get; set; } = [];
+    public virtual ICollection<KeyWord> KeyWords { get; set; } = [];
 }

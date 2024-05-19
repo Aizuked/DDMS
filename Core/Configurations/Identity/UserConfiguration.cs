@@ -14,6 +14,18 @@ public class UserConfiguration<TEntity> : IEntityTypeConfiguration<User>
         builder.Property(p => p.IsOnline)
                .IsRequired();
 
+        builder.Property(p => p.FirstName)
+               .IsRequired();
+
+        builder.Property(p => p.MiddleName);
+
+        builder.Property(p => p.LastName)
+               .IsRequired();
+
+        builder.Property(p => p.About);
+
+        builder.Property(p => p.JobTitle);
+
         builder.Property(p => p.LastOnline);
 
         builder.HasMany(p => p.UserChats)
@@ -31,8 +43,7 @@ public class UserConfiguration<TEntity> : IEntityTypeConfiguration<User>
                .HasForeignKey(p => p.QuestionnaireId);
 
         builder.HasMany<Message>()
-               .WithOne(p => p.Sender)
-               .HasForeignKey(p => p.SenderId);
+               .WithOne();
 
         builder.HasMany<Project>()
                .WithOne(p => p.Teacher)

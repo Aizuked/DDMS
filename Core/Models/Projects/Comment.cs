@@ -1,4 +1,5 @@
-﻿using Core.Models.Identity;
+﻿using Core.Models.Files;
+using Core.Models.Identity;
 
 namespace Core.Models.Projects;
 
@@ -11,4 +12,6 @@ public class Comment : BaseEntity
     public int AuthorId { get; set; }
 
     public virtual User Author { get; set; } = null!;
+
+    public virtual ICollection<LocalFile> LocalFiles { get; set; } = [];
 }

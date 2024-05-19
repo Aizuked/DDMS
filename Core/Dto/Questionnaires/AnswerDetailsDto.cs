@@ -1,6 +1,6 @@
-﻿namespace Core.Models.Questionnaires;
+﻿namespace Core.Dto.Questionnaires;
 
-public class Answer : BaseEntity
+public class AnswerDetailsDto
 {
     public string? Text { get; set; }
 
@@ -14,7 +14,5 @@ public class Answer : BaseEntity
 
     public virtual ICollection<string>? MultiSelected { get; set; }
 
-    public int QuestionId { get; set; }
-
-    public virtual Question Question { get; set; } = null!;
+    public QuestionListDto Question { get; set; } = new();
 }

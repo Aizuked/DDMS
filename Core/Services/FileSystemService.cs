@@ -17,7 +17,7 @@ public class FileSystemService : IFileSystemService
         _fileProcessor = fileProcessor;
     }
 
-    public Task<LocalFile> StoreAsync(
+    public async Task<LocalFile> StoreAsync(
         Stream stream,
         string fileExtension,
         int uploaderId
@@ -29,14 +29,13 @@ public class FileSystemService : IFileSystemService
 
         Directory.CreateDirectory(physicalPath);
 
-        _fileProcessor.ProcessAsync(stream, fullPath);
+        await _fileProcessor.ProcessAsync(stream, fullPath);
 
-        return Task.FromResult(
+        return
             new LocalFile
             {
                 PhysicalPath = fullPath
-            }
-        );
+            };
     }
 
     private string GetPhysicalPath(

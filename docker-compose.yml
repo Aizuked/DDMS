@@ -9,6 +9,9 @@
       - Files__BasePath=${FILES_BASE_PATH}
       - Files__Images__Dimensions__MaxWidth=${FILES_IMAGE_DIMENSIONS_MAX_WIDTH}
       - Files__Images__Dimensions__MaxHeight=${FILES_IMAGE_DIMENSIONS_MAX_HEIGHT}
+      - Files__Images__Dimensions__ThumbCoefficient=${FILES_IMAGE_DIMENSIONS_THUMB_COEFFICIENT}
+      - Files__Images__Dimensions__ThumbMinWidth=${FILES_IMAGE_DIMENSIONS_THUMB_MIN_WIDTH}
+      - Files__Images__Dimensions__ThumbMinHeight=${FILES_IMAGE_DIMENSIONS_THUMB_MIN_HEIGHT}
     env_file:
       - .env
     ports:
@@ -39,5 +42,14 @@
 
 volumes:
   files:
+    name: files_volume
+    type: disk
+    size: 1GB
   logs:
+    name: logs_volume
+    type: disk
+    size: 128MB
   dbdata:
+    name: database_volume
+    type: disk
+    size: 1GB

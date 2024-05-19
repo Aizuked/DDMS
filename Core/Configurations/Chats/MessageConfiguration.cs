@@ -32,8 +32,7 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.HasOne<LocalFile>()
                .WithOne();
 
-        builder.HasOne(p => p.Sender)
-               .WithMany()
-               .HasForeignKey(p => p.SenderId);
+        builder.HasOne(p => p.ProjectTask)
+               .WithMany();
     }
 }

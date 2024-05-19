@@ -1,4 +1,5 @@
 ﻿using Core.Models.Facets;
+using Core.Models.Files;
 using Core.Models.Identity;
 
 namespace Core.Models.Projects;
@@ -30,7 +31,9 @@ public class ProjectTask : BaseEntity
 
     public virtual User Author { get; set; } = null!;
 
-    public ICollection<Comment> Comments { get; set; } = [];
+    public virtual ICollection<Comment> Comments { get; set; } = [];
 
-    public ICollection<ProjectTask> LinkedTasks { get; set; } = [];
+    public virtual ICollection<ProjectTask> LinkedTasks { get; set; } = [];
+
+    public virtual ICollection<LocalFile> LocalFiles { get; set; } = [];
 }

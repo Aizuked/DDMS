@@ -90,7 +90,7 @@ namespace Core.Migrations
                     b.Property<int?>("LocalFileId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("SenderId")
+                    b.Property<int?>("ProjectTaskId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("TimeStamp")
@@ -100,7 +100,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("SenderId");
+                    b.HasIndex("ProjectTaskId");
 
                     b.ToTable("Messages");
                 });
@@ -189,6 +189,9 @@ namespace Core.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTimeOffset>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -210,6 +213,9 @@ namespace Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("ProjectTaskId")
+                        .HasColumnType("integer");
+
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
@@ -221,7 +227,11 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CommentId");
+
                     b.HasIndex("LocalFileGroupId");
+
+                    b.HasIndex("ProjectTaskId");
 
                     b.HasIndex("UploaderId");
 
@@ -269,13 +279,16 @@ namespace Core.Migrations
                     b.ToTable("LocalFileGroups");
                 });
 
-            modelBuilder.Entity("Core.Models.Identitiy.User", b =>
+            modelBuilder.Entity("Core.Models.Identity.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("About")
+                        .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
@@ -289,8 +302,19 @@ namespace Core.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsOnline")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("JobTitle")
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("LastOnline")
                         .HasColumnType("timestamp with time zone");
@@ -300,6 +324,9 @@ namespace Core.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("MiddleName")
+                        .HasColumnType("text");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("text");
@@ -739,7 +766,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("ChatUser", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", null)
+                    b.HasOne("Core.Models.Identity.User", null)
                         .WithMany()
                         .HasForeignKey("ParticipantsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -767,13 +794,11 @@ namespace Core.Migrations
                         .WithMany("Messages")
                         .HasForeignKey("ChatId");
 
-                    b.HasOne("Core.Models.Identitiy.User", "Sender")
+                    b.HasOne("Core.Models.Projects.ProjectTask", "ProjectTask")
                         .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectTaskId");
 
-                    b.Navigation("Sender");
+                    b.Navigation("ProjectTask");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.FacetItem", b =>
@@ -789,13 +814,21 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Files.LocalFile", b =>
                 {
+                    b.HasOne("Core.Models.Projects.Comment", null)
+                        .WithMany("LocalFiles")
+                        .HasForeignKey("CommentId");
+
                     b.HasOne("Core.Models.Files.LocalFileGroup", "LocalFileGroup")
                         .WithMany("Files")
                         .HasForeignKey("LocalFileGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Uploader")
+                    b.HasOne("Core.Models.Projects.ProjectTask", null)
+                        .WithMany("LocalFiles")
+                        .HasForeignKey("ProjectTaskId");
+
+                    b.HasOne("Core.Models.Identity.User", "Uploader")
                         .WithMany("LocalFiles")
                         .HasForeignKey("UploaderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -808,7 +841,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Projects.Comment", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -829,13 +862,13 @@ namespace Core.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Student")
+                    b.HasOne("Core.Models.Identity.User", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Core.Models.Identitiy.User", "Teacher")
+                    b.HasOne("Core.Models.Identity.User", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -858,7 +891,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany()
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -913,7 +946,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Author")
+                    b.HasOne("Core.Models.Identity.User", "Author")
                         .WithMany("Questionnaires")
                         .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -932,7 +965,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Questionnaires.QuestionnaireResult", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Interviewee")
+                    b.HasOne("Core.Models.Identity.User", "Interviewee")
                         .WithMany("QuestionnaireResults")
                         .HasForeignKey("IntervieweeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -965,7 +998,7 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Themes.Theme", b =>
                 {
-                    b.HasOne("Core.Models.Identitiy.User", "Approver")
+                    b.HasOne("Core.Models.Identity.User", "Approver")
                         .WithMany()
                         .HasForeignKey("ApproverId");
 
@@ -993,7 +1026,7 @@ namespace Core.Migrations
                     b.Navigation("Files");
                 });
 
-            modelBuilder.Entity("Core.Models.Identitiy.User", b =>
+            modelBuilder.Entity("Core.Models.Identity.User", b =>
                 {
                     b.Navigation("LocalFiles");
 
@@ -1002,11 +1035,18 @@ namespace Core.Migrations
                     b.Navigation("Questionnaires");
                 });
 
+            modelBuilder.Entity("Core.Models.Projects.Comment", b =>
+                {
+                    b.Navigation("LocalFiles");
+                });
+
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("LinkedTasks");
+
+                    b.Navigation("LocalFiles");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>
