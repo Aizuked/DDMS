@@ -1,4 +1,7 @@
-﻿namespace Core.Dto.Chats;
+﻿using AutoMapper;
+using Core.Models.Chats;
+
+namespace Core.Dto.Chats;
 
 public class MessageListDto
 {
@@ -19,4 +22,12 @@ public class MessageListDto
     public string ProjectTaskDisplayName { get; set; } = string.Empty;
 
     public string ProjectTaskStatusDisplayName { get; set; } = string.Empty;
+}
+
+public partial class MessageListDtoProfile : Profile
+{
+    public MessageListDtoProfile()
+    {
+        CreateMap<Message, MessageListDto>();
+    }
 }

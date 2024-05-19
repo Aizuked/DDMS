@@ -1,4 +1,7 @@
 using AspNetCoreHero.ToastNotification;
+using AutoMapper;
+using AutoMapper.EntityFrameworkCore;
+using AutoMapper.EquivalencyExpression;
 using Core;
 using Core.Models.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -49,6 +52,16 @@ builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 
 builder.Services.AddProblemDetails();
 
+builder.Services.AddAutoMapper(
+    options =>
+    {
+        options.AddCollectionMappers();
+        options.UseEntityFrameworkCoreModel<DdmsDbContext>(builder.Services);
+        options.UseEntityFrameworkCoreModel<IdentityContext>(builder.Services);
+        options.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
+    }
+);
+
 
 var app = builder.Build();
 
@@ -63,8 +76,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.EnsureMigrationOfContext<IdentityContext>();
 app.EnsureMigrationOfContext<DdmsDbContext>();
+
+app.AssertAutoMapperMappings();
 
 app.UseAuthorization();
 

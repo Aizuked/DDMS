@@ -1,4 +1,6 @@
-﻿using Core.Dto.Questionnaires;
+﻿using AutoMapper;
+using Core.Dto.Questionnaires;
+using Core.Models.Identity;
 
 namespace Core.Dto.Identity;
 
@@ -23,4 +25,12 @@ public class UserDetailsDto
     public int? ProfilePictureId { get; set; }
 
     public ICollection<QuestionnaireDetailsDto> Questionnaires { get; set; } = [];
+}
+
+public partial class UserDetailsDtoProfile : Profile
+{
+    public UserDetailsDtoProfile()
+    {
+        CreateMap<User, UserDetailsDto>();
+    }
 }

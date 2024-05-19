@@ -3,27 +3,25 @@ using Core.Models.Identity;
 
 namespace Core.Dto.Identity;
 
-public class UserListDto
+public class UserEditDto
 {
-    public int Id { get; set; }
-
     public string FirstName { get; set; } = string.Empty;
 
     public string? MiddleName { get; set; }
 
     public string LastName { get; set; } = string.Empty;
 
-    public bool IsOnline { get; set; }
+    public string? About { get; set; }
 
-    public DateTime? LastOnline { get; set; }
+    public string? JobTitle { get; set; }
 
     public int? ProfilePictureId { get; set; }
 }
 
-public partial class UserListDtoProfile : Profile
+public partial class UserEditDtoProfile : Profile
 {
-    public UserListDtoProfile()
+    public UserEditDtoProfile()
     {
-        CreateMap<User, UserListDto>();
+        CreateMap<UserEditDto, User>();
     }
 }

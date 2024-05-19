@@ -326,7 +326,7 @@ namespace Core.Migrations
                     DateTimeEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     Number = table.Column<decimal>(type: "numeric", nullable: true),
                     Checked = table.Column<bool>(type: "boolean", nullable: true),
-                    MultiSelected = table.Column<string[]>(type: "text[]", nullable: true),
+                    MultiSelected = table.Column<string[]>(type: "text[]", nullable: false),
                     QuestionId = table.Column<int>(type: "integer", nullable: false),
                     QuestionnaireResultId = table.Column<int>(type: "integer", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),

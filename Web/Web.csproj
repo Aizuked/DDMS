@@ -38,7 +38,13 @@
       <Folder Include="Services\Projects\" />
       <Folder Include="Services\Questionnaires\" />
       <Folder Include="Services\Themes\" />
-      <Folder Include="Viewmodels\" />
+      <Folder Include="Viewmodels\Chats\" />
+      <Folder Include="Viewmodels\Facets\" />
+      <Folder Include="Viewmodels\Files\" />
+      <Folder Include="Viewmodels\Identity\" />
+      <Folder Include="Viewmodels\Projects\" />
+      <Folder Include="Viewmodels\Questionnaires\" />
+      <Folder Include="Viewmodels\Themes\" />
     </ItemGroup>
 
 </Project>

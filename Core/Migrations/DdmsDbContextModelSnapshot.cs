@@ -529,6 +529,7 @@ namespace Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string[]>("MultiSelected")
+                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<decimal?>("Number")

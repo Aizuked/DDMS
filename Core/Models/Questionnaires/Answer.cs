@@ -12,7 +12,7 @@ public class Answer : BaseEntity
 
     public bool? Checked { get; set; }
 
-    public virtual ICollection<string>? MultiSelected { get; set; }
+    public virtual ICollection<string> MultiSelected { get; set; } = [];
 
     public int QuestionId { get; set; }
 

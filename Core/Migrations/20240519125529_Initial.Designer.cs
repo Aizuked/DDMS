@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Migrations
 {
     [DbContext(typeof(DdmsDbContext))]
-    [Migration("20240519121408_Initial")]
+    [Migration("20240519125529_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -532,6 +532,7 @@ namespace Core.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string[]>("MultiSelected")
+                        .IsRequired()
                         .HasColumnType("text[]");
 
                     b.Property<decimal?>("Number")

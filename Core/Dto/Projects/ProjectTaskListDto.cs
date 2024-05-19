@@ -1,4 +1,7 @@
-﻿namespace Core.Dto.Projects;
+﻿using AutoMapper;
+using Core.Models.Projects;
+
+namespace Core.Dto.Projects;
 
 public class ProjectTaskListDto
 {
@@ -13,4 +16,12 @@ public class ProjectTaskListDto
     public DateTime? DateTimeEnd { get; set; }
 
     public string StatusDisplayName { get; set; } = string.Empty;
+}
+
+public partial class ProjectTaskListDtoProfile : Profile
+{
+    public ProjectTaskListDtoProfile()
+    {
+        CreateMap<ProjectTask, ProjectTaskListDto>();
+    }
 }

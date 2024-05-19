@@ -1,4 +1,7 @@
-﻿namespace Core.Dto.Facets;
+﻿using AutoMapper;
+using Core.Models.Facets;
+
+namespace Core.Dto.Facets;
 
 public class FacetItemListDto
 {
@@ -25,4 +28,12 @@ public class FacetItemListDto
     public string FacetDisplayName { get; set; } = string.Empty;
 
     public string FacetDescription { get; set; } = string.Empty;
+}
+
+public partial class FacetItemListDtoProfile : Profile
+{
+    public FacetItemListDtoProfile()
+    {
+        CreateMap<FacetItem, FacetItemListDto>();
+    }
 }

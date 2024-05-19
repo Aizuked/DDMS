@@ -1,4 +1,6 @@
-﻿using Core.Dto.Identity;
+﻿using AutoMapper;
+using Core.Dto.Identity;
+using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
@@ -26,9 +28,17 @@ public class ProjectDetailsDto
 
     public string StatusDisplayName { get; set; } = string.Empty;
 
-    public string? SelectedThemeText { get; set; }
+    public string? ThemeSelectedThemeText { get; set; }
 
-    public bool SelectedThemeIsApproved { get; set; }
+    public bool ThemeIsApproved { get; set; }
 
-    public bool SelectedThemeIsChangeRequested { get; set; }
+    public bool ThemeIsChangeRequested { get; set; }
+}
+
+public partial class ProjectDetailsDtoProfile : Profile
+{
+    public ProjectDetailsDtoProfile()
+    {
+        CreateMap<Project, ProjectDetailsDto>();
+    }
 }

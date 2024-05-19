@@ -42,14 +42,5 @@
 
 volumes:
   files:
-    name: files_volume
-    type: disk
-    size: 1GB
   logs:
-    name: logs_volume
-    type: disk
-    size: 128MB
   dbdata:
-    name: database_volume
-    type: disk
-    size: 1GB

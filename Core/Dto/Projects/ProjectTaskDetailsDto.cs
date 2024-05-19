@@ -1,4 +1,6 @@
-﻿using Core.Dto.Identity;
+﻿using AutoMapper;
+using Core.Dto.Identity;
+using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
@@ -29,4 +31,13 @@ public class ProjectTaskDetailsDto
     public ICollection<ProjectTaskListDto> LinkedTasks { get; set; } = [];
 
     public ICollection<int> LocalFilesIds { get; set; } = [];
+}
+
+public partial class ProjectTaskDetailsDtoProfile : Profile
+{
+    public ProjectTaskDetailsDtoProfile()
+    {
+        CreateMap<ProjectTask, ProjectTaskDetailsDto>()
+            .ForMember(dto => dto.LocalFilesIds, opts => opts.MapFrom(entity => entity.LocalFiles.Select(i => i.Id)));
+    }
 }

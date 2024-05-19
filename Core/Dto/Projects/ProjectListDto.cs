@@ -1,4 +1,6 @@
-﻿using Core.Dto.Identity;
+﻿using AutoMapper;
+using Core.Dto.Identity;
+using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
@@ -21,4 +23,12 @@ public class ProjectListDto
     public UserListDto Teacher { get; set; } = new();
 
     public string StatusDisplayName { get; set; } = string.Empty;
+}
+
+public partial class ProjectListDtoProfile : Profile
+{
+    public ProjectListDtoProfile()
+    {
+        CreateMap<Project, ProjectListDto>();
+    }
 }

@@ -6,7 +6,7 @@ public class Message
 {
     public long Id { get; set; }
 
-    public string? Content { get; set; } = string.Empty;
+    public string? Content { get; set; }
 
     public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
 

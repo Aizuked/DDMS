@@ -3,7 +3,7 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class AnswerDetailsDto
+public class AnswerEditDto
 {
     public string? Text { get; set; }
 
@@ -16,14 +16,12 @@ public class AnswerDetailsDto
     public bool? Checked { get; set; }
 
     public ICollection<string> MultiSelected { get; set; } = [];
-
-    public QuestionListDto Question { get; set; } = new();
 }
 
-public partial class AnswerDetailsDtoProfile : Profile
+public partial class AnswerEditDtoProfile : Profile
 {
-    public AnswerDetailsDtoProfile()
+    public AnswerEditDtoProfile()
     {
-        CreateMap<Answer, AnswerDetailsDto>();
+        CreateMap<AnswerEditDto, Answer>();
     }
 }
