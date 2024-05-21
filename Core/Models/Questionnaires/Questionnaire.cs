@@ -12,9 +12,9 @@ public class Questionnaire : BaseEntity
     public int TypeId { get; set; }
 
     /// <summary>
-    /// Перечисление QuestionnaireType.
+    /// Перечисление questionnaire_type.
     /// </summary>
-    public FacetItem Type { get; set; } = null!;
+    public virtual FacetItem Type { get; set; } = null!;
 
     public int AuthorId { get; set; }
 

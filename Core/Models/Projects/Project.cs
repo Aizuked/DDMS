@@ -23,9 +23,9 @@ public class Project : BaseEntity
     public int StatusId { get; set; }
 
     /// <summary>
-    /// Перечисление ProjectStatus.
+    /// Перечисление project_status.
     /// </summary>
-    public FacetItem Status { get; set; } = null!;
+    public virtual FacetItem Status { get; set; } = null!;
 
     public int ThemeId { get; set; }
 

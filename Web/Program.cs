@@ -7,6 +7,7 @@ using Core.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Miscellaneous;
+using Web.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,9 +60,10 @@ builder.Services.AddAutoMapper(
         options.UseEntityFrameworkCoreModel<DdmsDbContext>(builder.Services);
         options.UseEntityFrameworkCoreModel<IdentityContext>(builder.Services);
         options.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
-    }
+    }, AppDomain.CurrentDomain.GetAssemblies()
 );
 
+builder.Services.AddTransient<UserService>();
 
 var app = builder.Build();
 

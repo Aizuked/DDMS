@@ -11,22 +11,7 @@ public class Question : BaseEntity
     public int TypeId { get; set; }
 
     /// <summary>
-    /// Перечисление QuestionType.
+    /// Перечисление question_type.
     /// </summary>
-    public FacetItem Type { get; set; } = null!;
+    public virtual FacetItem Type { get; set; } = null!;
 }
-
-// public enum QuestionType
-// {
-//     Text = 0,
-//
-//     TimeSpan = 1,
-//
-//     Numeric = 2,
-//
-//     CheckBox = 3,
-//
-//     SelectList = 4,
-//
-//     MultiSelect = 5
-// }

@@ -23,7 +23,7 @@ public class ProjectTask : BaseEntity
     public int StatusId { get; set; }
 
     /// <summary>
-    /// Перечисление TaskStatus.
+    /// Перечисление task_status.
     /// </summary>
     public virtual FacetItem Status { get; set; } = null!;
 
