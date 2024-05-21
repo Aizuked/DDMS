@@ -31,13 +31,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Areas\Chat\" />
-      <Folder Include="Areas\Facet\" />
-      <Folder Include="Areas\Files\" />
-      <Folder Include="Areas\Identity\" />
-      <Folder Include="Areas\Project\" />
-      <Folder Include="Areas\Questionnaire\" />
-      <Folder Include="Areas\Theme\" />
       <Folder Include="Services\Chat\" />
       <Folder Include="Services\Facets\" />
       <Folder Include="Services\Files\" />
