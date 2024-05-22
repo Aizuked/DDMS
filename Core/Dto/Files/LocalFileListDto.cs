@@ -3,10 +3,8 @@ using Core.Models.Files;
 
 namespace Core.Dto.Files;
 
-public class LocalFileListDto
+public class LocalFileListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public string DisplayName { get; set; } = string.Empty;
 
     public string MimeType { get; set; } = string.Empty;

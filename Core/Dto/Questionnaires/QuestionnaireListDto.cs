@@ -5,10 +5,8 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class QuestionnaireListDto
+public class QuestionnaireListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public string DisplayName { get; set; } = string.Empty;
 
     public int ParticipationCount { get; set; }

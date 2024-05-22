@@ -6,6 +6,5 @@ namespace Web.Areas.Questionnaire;
 
 public class QuestionnaireController(DdmsDbContext context, UserService userService) : Controller
 {
-    private readonly DdmsDbContext _context = context;
-    private readonly UserService _userService = userService;
+    
 }

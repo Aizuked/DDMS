@@ -3,7 +3,7 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class AnswerEditDto
+public class AnswerEditDto : BaseEntityDto
 {
     public string? Text { get; set; }
 
@@ -22,6 +22,12 @@ public partial class AnswerEditDtoProfile : Profile
 {
     public AnswerEditDtoProfile()
     {
-        CreateMap<AnswerEditDto, Answer>();
+        CreateMap<AnswerEditDto, Answer>()
+            .ForMember(i => i.Id, opt => opt.Ignore())
+            .ForMember(i => i.QuestionId, opt => opt.Ignore())
+            .ForMember(i => i.Question, opt => opt.Ignore())
+            .ForMember(i => i.IsDeleted, opt => opt.Ignore())
+            .ForMember(i => i.Created, opt => opt.Ignore())
+            .ForMember(i => i.Updated, opt => opt.Ignore());
     }
 }

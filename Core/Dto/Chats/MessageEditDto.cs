@@ -18,6 +18,11 @@ public partial class MessageEditDtoProfile : Profile
 {
     public MessageEditDtoProfile()
     {
-        CreateMap<MessageEditDto, Message>();
+        CreateMap<MessageEditDto, Message>()
+            .ForMember(i => i.Id, opt => opt.Ignore())
+            .ForMember(i => i.TimeStamp, opt => opt.Ignore())
+            .ForMember(i => i.IsEdited, opt => opt.Ignore())
+            .ForMember(i => i.IsReceived, opt => opt.Ignore())
+            .ForMember(i => i.ProjectTask, opt => opt.Ignore());
     }
 }

@@ -4,10 +4,8 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class QuestionListDto
+public class QuestionListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public int Text { get; set; }
 
     public bool IsRequired { get; set; }

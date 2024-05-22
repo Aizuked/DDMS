@@ -4,10 +4,8 @@ using Core.Models.Chats;
 
 namespace Core.Dto.Chats;
 
-public class ChatListDto
+public class ChatListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public int? ProjectId { get; set; }
 
     public string? ProjectCode { get; set; }
@@ -17,8 +15,6 @@ public class ChatListDto
     public MessageListDto LastMessage { get; set; } = new();
 
     public ICollection<UserListDto> Participants { get; set; } = [];
-
-    public DateTimeOffset Updated { get; set; }
 }
 
 public partial class ChatListDtoProfile : Profile

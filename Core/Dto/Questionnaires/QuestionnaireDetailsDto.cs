@@ -5,10 +5,8 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class QuestionnaireDetailsDto
+public class QuestionnaireDetailsDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public string DisplayName { get; set; } = string.Empty;
 
     public FacetItemDetailsDto Type { get; set; } = new();

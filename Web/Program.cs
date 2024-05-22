@@ -60,7 +60,7 @@ builder.Services.AddAutoMapper(
         options.UseEntityFrameworkCoreModel<DdmsDbContext>(builder.Services);
         options.UseEntityFrameworkCoreModel<IdentityContext>(builder.Services);
         options.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
-    }, AppDomain.CurrentDomain.GetAssemblies()
+    }
 );
 
 builder.Services.AddTransient<UserService>();
@@ -79,6 +79,7 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.EnsureMigrationOfContext<DdmsDbContext>();
+app.EnsureMigrationOfContext<IdentityContext>();
 
 app.AssertAutoMapperMappings();
 

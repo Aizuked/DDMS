@@ -4,14 +4,8 @@ using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
-public class ProjectTaskDetailsDto
+public class ProjectTaskDetailsDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
-    public DateTimeOffset Created { get; set; }
-
-    public DateTimeOffset Updated { get; set; }
-
     public string DisplayName { get; set; } = string.Empty;
 
     public string? Description { get; set; }

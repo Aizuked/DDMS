@@ -3,7 +3,7 @@ using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
-public class ProjectTaskEditDto
+public class ProjectTaskEditDto : BaseEntityDto
 {
     public string DisplayName { get; set; } = string.Empty;
 
@@ -23,13 +23,23 @@ public class ProjectTaskEditDto
 
     public ICollection<int> LinkedTaskIds { get; set; } = [];
 
-    public ICollection<int> LocalFileIdss { get; set; } = [];
+    public ICollection<int> LocalFileIds { get; set; } = [];
 }
 
 public partial class ProjectTaskEditDtoProfile : Profile
 {
     public ProjectTaskEditDtoProfile()
     {
-        CreateMap<ProjectTaskEditDto, ProjectTask>();
+        CreateMap<ProjectTaskEditDto, ProjectTask>()
+            .ForMember(i => i.Id, opt => opt.Ignore())
+            .ForMember(i => i.ParentTask, opt => opt.Ignore())
+            .ForMember(i => i.Status, opt => opt.Ignore())
+            .ForMember(i => i.Author, opt => opt.Ignore())
+            .ForMember(i => i.Comments, opt => opt.Ignore())
+            .ForMember(i => i.LinkedTasks, opt => opt.MapFrom(j => j.LocalFileIds))
+            .ForMember(i => i.LocalFiles, opt => opt.MapFrom(j => j.LocalFileIds))
+            .ForMember(i => i.IsDeleted, opt => opt.Ignore())
+            .ForMember(i => i.Created, opt => opt.Ignore())
+            .ForMember(i => i.Updated, opt => opt.Ignore());
     }
 }

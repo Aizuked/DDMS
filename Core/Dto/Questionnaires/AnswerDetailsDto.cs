@@ -3,7 +3,7 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class AnswerDetailsDto
+public class AnswerDetailsDto : BaseEntityDto
 {
     public string? Text { get; set; }
 

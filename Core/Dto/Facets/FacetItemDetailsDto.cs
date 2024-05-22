@@ -3,10 +3,8 @@ using Core.Models.Facets;
 
 namespace Core.Dto.Facets;
 
-public class FacetItemDetailsDto
+public class FacetItemDetailsDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public string Code { get; set; } = string.Empty;
 
     public string DisplayName { get; set; } = string.Empty;

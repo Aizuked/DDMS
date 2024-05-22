@@ -3,7 +3,7 @@ using Core.Models.Facets;
 
 namespace Core.Dto.Facets;
 
-public class FacetItemEditDto
+public class FacetItemEditDto : BaseEntityDto
 {
     public string Code { get; set; } = string.Empty;
 
@@ -18,6 +18,11 @@ public partial class FacetItemEditDtoProfile : Profile
 {
     public FacetItemEditDtoProfile()
     {
-        CreateMap<FacetItemEditDto, FacetItem>();
+        CreateMap<FacetItemEditDto, FacetItem>()
+            .ForMember(i => i.Id, opt => opt.Ignore())
+            .ForMember(i => i.Facet, opt => opt.Ignore())
+            .ForMember(i => i.IsDeleted, opt => opt.Ignore())
+            .ForMember(i => i.Created, opt => opt.Ignore())
+            .ForMember(i => i.Updated, opt => opt.Ignore());
     }
 }

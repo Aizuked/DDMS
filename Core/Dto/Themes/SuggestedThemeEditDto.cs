@@ -12,6 +12,7 @@ public partial class SuggestedThemeEditDtoProfile : Profile
 {
     public SuggestedThemeEditDtoProfile()
     {
-        CreateMap<SuggestedThemeEditDto, SuggestedTheme>();
+        CreateMap<SuggestedThemeEditDto, SuggestedTheme>()
+            .ForMember(i => i.Id, opt => opt.Ignore());
     }
 }

@@ -3,7 +3,7 @@ using Core.Models.Files;
 
 namespace Core.Dto.Files;
 
-public class LocalFileGroupListDto
+public class LocalFileGroupListDto : BaseEntityDto
 {
     public string Code { get; set; } = string.Empty;
 

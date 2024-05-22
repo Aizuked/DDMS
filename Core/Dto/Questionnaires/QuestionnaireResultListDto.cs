@@ -4,10 +4,8 @@ using Core.Models.Questionnaires;
 
 namespace Core.Dto.Questionnaires;
 
-public class QuestionnaireResultListDto
+public class QuestionnaireResultListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public UserListDto Interviewee { get; set; } = new();
 
     public QuestionnaireDetailsDto Questionnaire { get; set; } = new();

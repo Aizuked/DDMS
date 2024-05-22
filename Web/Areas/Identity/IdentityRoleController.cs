@@ -4,7 +4,7 @@ using Web.Services.Identity;
 
 namespace Web.Areas.Identity;
 
-public class UserController(DdmsDbContext context, UserService userService) : Controller
+public class IdentityRoleController(DdmsDbContext context, UserService userService) : Controller
 {
     
 }

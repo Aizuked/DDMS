@@ -25,10 +25,16 @@ public static class Migrator
         switch (context)
         {
             case DdmsDbContext ctx:
+                if (ctx.Facets.Any(i => i.Code == "project_status"))
+                    return;
+
                 await SeedMainContext(ctx);
                 break;
 
             case IdentityContext ctx:
+                if (ctx.Roles.Any(i => i.Name == ROLES_ADMIN))
+                    return;
+
                 await SeedIdentityRoles(ctx);
                 break;
         }

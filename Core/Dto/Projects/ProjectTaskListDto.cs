@@ -3,10 +3,8 @@ using Core.Models.Projects;
 
 namespace Core.Dto.Projects;
 
-public class ProjectTaskListDto
+public class ProjectTaskListDto : BaseEntityDto
 {
-    public int Id { get; set; }
-
     public string DisplayName { get; set; } = string.Empty;
 
     public int Readiness { get; set; }
