@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Questionnaires;
 
-public class QuestionnaireListViewModel : ListBaseViewModel
+public class QuestionnaireListViewModel : ListBaseFilter
 {
     public List<QuestionnaireListDto> QuestionnaireListDtos { get; set; } = [];
 }

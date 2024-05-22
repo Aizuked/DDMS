@@ -44,7 +44,7 @@ public class FileSystemService : IFileSystemService
     {
         return
             _configuration.GetSection("Files")["BasePath"] ??
-            Constants.ENV_FILE_PATH + uploaderId + Constants.ENV_DIR_SEP;
+            Constants.Constants.ENV_FILE_PATH + uploaderId + Constants.Constants.ENV_DIR_SEP;
     }
 
     private string GetPhysicalName()

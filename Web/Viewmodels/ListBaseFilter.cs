@@ -1,6 +1,6 @@
 ﻿namespace Web.Viewmodels;
 
-public class ListBaseViewModel
+public class ListBaseFilter
 {
     public int PageSize { get; set; } = 20;
 

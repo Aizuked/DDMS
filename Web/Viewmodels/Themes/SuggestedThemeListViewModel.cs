@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Themes;
 
-public class SuggestedThemeListViewModel : ListBaseViewModel
+public class SuggestedThemeListViewModel : ListBaseFilter
 {
     public List<SuggestedThemeListDto> SuggestedThemeListDtos { get; set; } = [];
 }

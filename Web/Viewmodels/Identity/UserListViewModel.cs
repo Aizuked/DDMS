@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Identity;
 
-public class UserListViewModel : ListBaseViewModel
+public class UserListViewModel : ListBaseFilter
 {
     public List<UserListDto> UserListDtos { get; set; } = [];
 }

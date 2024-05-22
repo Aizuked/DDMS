@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Projects;
 
-public class ProjectTaskListViewModel : ListBaseViewModel
+public class ProjectTaskListViewModel : ListBaseFilter
 {
     public List<ProjectTaskListDto> ProjectTaskListDtos { get; set; } = [];
 }

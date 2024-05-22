@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Facets;
 
-public class FacetItemListViewModel : ListBaseViewModel
+public class FacetItemListViewModel : ListBaseFilter
 {
     public List<FacetItemListDto> FacetItemListDtos { get; set; } = [];
 }

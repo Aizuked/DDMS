@@ -1,6 +1,6 @@
+global using static Core.Constants.Constants;
 using AspNetCoreHero.ToastNotification;
 using AutoMapper;
-using AutoMapper.EntityFrameworkCore;
 using AutoMapper.EquivalencyExpression;
 using Core;
 using Core.Models.Identity;

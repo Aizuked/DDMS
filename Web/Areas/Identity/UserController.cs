@@ -1,10 +1,86 @@
-﻿using Core;
+﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Core;
+using Core.Dto.Identity;
+using Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Web.Miscellaneous.Extensions;
 using Web.Services.Identity;
+using Web.Viewmodels;
+using Web.Viewmodels.Identity;
 
 namespace Web.Areas.Identity;
 
-public class UserController(DdmsDbContext context, UserService userService) : Controller
+public class UserController(IdentityContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    
+    public async Task<IActionResult> List(ListBaseFilter filter)
+    {
+        var usersQuery =
+            userService
+                .GetUserQuery();
+
+        var userDtos =
+            await
+                usersQuery
+                    .ProjectTo<UserListDto>(mapper.ConfigurationProvider)
+                    .Filter(filter)
+                    .ToListAsync();
+
+        var viewModel = new UserListViewModel
+        {
+            PageCount = await usersQuery.CountAsync(),
+            CurrentPage = filter.CurrentPage,
+            PageSize = filter.PageSize,
+            UserListDtos = userDtos
+        };
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Details(int id)
+    {
+        var viewModel = new UserDetailsViewModel
+        {
+            IsSelf = (await userService.GetCurrentOrThrow(User)).Id == id,
+            CurrentUserRole = (await userService.GetCurrentRoles(User)).ToList(),
+            UserDetailsDto = mapper.Map<UserDetailsDto>(await userService.UserByIdOrThrow(id))
+        };
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> Edit(int id)
+    {
+        if (
+            !User.IsInRole(ROLES_ADMIN) ||
+            (await userService.GetCurrentOrThrow(User)).Id != id
+        )
+            throw new NoRightsException();
+
+        var viewModel = new UserEditViewModel
+        {
+            UserEditDto = mapper.Map<UserEditDto>(await userService.UserByIdOrThrow(id))
+        };
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    public async Task Edit([FromRoute] int id, [FromBody] UserEditDto dto)
+    {
+        if (
+            !User.IsInRole(ROLES_ADMIN) ||
+            (await userService.GetCurrentOrThrow(User)).Id != id
+        )
+            throw new NoRightsException();
+
+        var user = await userService.UserByIdOrThrow(id);
+
+        mapper.Map(dto, user);
+        await context.SaveChangesAsync();
+
+        toastify.Success(NOTIFY_SUCCESS);
+    }
 }

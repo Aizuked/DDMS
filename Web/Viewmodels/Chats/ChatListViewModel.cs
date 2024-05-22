@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Chats;
 
-public class ChatListViewModel : ListBaseViewModel
+public class ChatListViewModel : ListBaseFilter
 {
     public List<ChatListDto> ChatListDtos { get; set; } = [];
 }

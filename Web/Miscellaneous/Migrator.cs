@@ -4,7 +4,6 @@ using Core.Models.Facets;
 using Core.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using static Core.Constants;
 
 namespace Web.Miscellaneous;
 

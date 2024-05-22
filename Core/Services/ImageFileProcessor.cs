@@ -68,7 +68,7 @@ public class ImageFileProcessor : IFileProcessor
     {
         var sb = new StringBuilder(fullPath);
         var lastDotInd = fullPath.LastIndexOf('.');
-        sb.Insert(lastDotInd, Constants.IMAGES_THUMB_POSTFIX);
+        sb.Insert(lastDotInd, Constants.Constants.IMAGES_THUMB_POSTFIX);
         return sb.ToString();
     }
 
