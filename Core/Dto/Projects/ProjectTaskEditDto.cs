@@ -21,6 +21,8 @@ public class ProjectTaskEditDto : BaseEntityDto
 
     public int AuthorId { get; set; }
 
+    public ProjectListDto ProjectListDto { get; set; } = new();
+
     public ICollection<int> LinkedTaskIds { get; set; } = [];
 
     public ICollection<int> LocalFileIds { get; set; } = [];

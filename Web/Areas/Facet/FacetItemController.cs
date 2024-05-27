@@ -15,17 +15,22 @@ namespace Web.Areas.Facet;
 
 public class FacetItemController(DdmsDbContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    public async Task<IActionResult> List(ListBaseFilter filter)
+    public async Task<IActionResult> List(ListPaginationFilter filter)
     {
+        if (!User.IsInRole(ROLES_ADMIN))
+            throw new NoRightsException();
+
         var facetItemsQuery =
             context
-                .FacetItems;
+                .FacetItems
+                .Where(i => !i.IsDeleted)
+                .AsQueryable();
 
         var facetItemsDtos =
             await
                 facetItemsQuery
                     .ProjectTo<FacetItemListDto>(mapper.ConfigurationProvider)
-                    .Filter(filter)
+                    .Paginate(filter)
                     .ToListAsync();
 
         var viewModel = new FacetItemListViewModel
@@ -62,7 +67,7 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
     }
 
     [HttpPost]
-    public async Task Edit([FromRoute] int id, [FromBody] FacetEditDto dto)
+    public async Task Edit(FacetEditDto dto)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
@@ -71,11 +76,36 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
             await
                 context
                     .FacetItems
-                    .Where(i => i.Id == id)
+                    .Where(i => i.Id == dto.Id)
                     .FirstOrDefaultAsync()
             ?? throw new NotifiableException("Не удалось найти указанный элемент справочника.");
 
         mapper.Map(dto, facetItem);
+        await context.SaveChangesAsync();
+
+        toastify.Success(NOTIFY_SUCCESS);
+    }
+
+    [HttpPost]
+    public async Task Delete(int id)
+    {
+        if (!User.IsInRole(ROLES_ADMIN))
+            throw new NoRightsException();
+
+        var facetItem =
+            await
+                context
+                    .FacetItems
+                    .Include(facetItem => facetItem.Facet)
+                    .Where(i => i.Id == id)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти указанный элемент справочника.");
+
+        if (facetItem.Facet.IsSystem)
+            throw new NotifiableException("Невозможно удалить элемент справочника, используемый в системе.");
+
+        facetItem.IsDeleted = true;
+
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);

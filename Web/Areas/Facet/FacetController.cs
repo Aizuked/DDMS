@@ -25,7 +25,7 @@ public class FacetController(DdmsDbContext context, UserService userService, IMa
                     .Where(i => i.Id == id)
                     .ProjectTo<FacetEditDto>(mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync()
-                ?? throw new NotifiableException("Не удалось найти указанный справочник.");
+            ?? throw new NotifiableException("Не удалось найти указанный справочник.");
 
         var viewModel = new FacetEditViewModel
         {
@@ -36,7 +36,7 @@ public class FacetController(DdmsDbContext context, UserService userService, IMa
     }
 
     [HttpPost]
-    public async Task Edit([FromRoute] int id, [FromBody] FacetEditDto dto)
+    public async Task Edit(FacetEditDto dto)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
@@ -45,7 +45,7 @@ public class FacetController(DdmsDbContext context, UserService userService, IMa
             await
                 context
                     .Facets
-                    .Where(i => i.Id == id)
+                    .Where(i => i.Id == dto.Id)
                     .FirstOrDefaultAsync()
             ?? throw new NotifiableException("Не удалось найти указанный справочник.");
 

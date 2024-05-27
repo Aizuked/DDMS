@@ -15,7 +15,7 @@ namespace Web.Areas.Identity;
 
 public class UserController(IdentityContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    public async Task<IActionResult> List(ListBaseFilter filter)
+    public async Task<IActionResult> List(ListPaginationFilter filter)
     {
         var usersQuery =
             userService
@@ -25,7 +25,7 @@ public class UserController(IdentityContext context, UserService userService, IM
             await
                 usersQuery
                     .ProjectTo<UserListDto>(mapper.ConfigurationProvider)
-                    .Filter(filter)
+                    .Paginate(filter)
                     .ToListAsync();
 
         var viewModel = new UserListViewModel
@@ -43,8 +43,8 @@ public class UserController(IdentityContext context, UserService userService, IM
     {
         var viewModel = new UserDetailsViewModel
         {
-            IsSelf = (await userService.GetCurrentOrThrow(User)).Id == id,
-            CurrentUserRole = (await userService.GetCurrentRoles(User)).ToList(),
+            CanEdit = await userService.OwnsOrInRole(User, id, ROLES_ADMIN),
+            CanGrantRole = User.IsInRole(ROLES_ADMIN),
             UserDetailsDto = mapper.Map<UserDetailsDto>(await userService.UserByIdOrThrow(id))
         };
 
@@ -53,10 +53,7 @@ public class UserController(IdentityContext context, UserService userService, IM
 
     public async Task<IActionResult> Edit(int id)
     {
-        if (
-            !User.IsInRole(ROLES_ADMIN) ||
-            (await userService.GetCurrentOrThrow(User)).Id != id
-        )
+        if (!await userService.OwnsOrInRole(User, id, ROLES_ADMIN))
             throw new NoRightsException();
 
         var viewModel = new UserEditViewModel
@@ -68,15 +65,12 @@ public class UserController(IdentityContext context, UserService userService, IM
     }
 
     [HttpPost]
-    public async Task Edit([FromRoute] int id, [FromBody] UserEditDto dto)
+    public async Task Edit(UserEditDto dto)
     {
-        if (
-            !User.IsInRole(ROLES_ADMIN) ||
-            (await userService.GetCurrentOrThrow(User)).Id != id
-        )
+        if (!await userService.OwnsOrInRole(User, dto.Id, ROLES_ADMIN))
             throw new NoRightsException();
 
-        var user = await userService.UserByIdOrThrow(id);
+        var user = await userService.UserByIdOrThrow(dto.Id);
 
         mapper.Map(dto, user);
         await context.SaveChangesAsync();

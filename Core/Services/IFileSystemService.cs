@@ -1,10 +1,8 @@
-﻿using Core.Models.Files;
-
-namespace Core.Services;
+﻿namespace Core.Services;
 
 public interface IFileSystemService
 {
-    Task<LocalFile> StoreAsync(
+    Task<string> StoreAsync(
         Stream stream,
         string fileExtension,
         int uploaderId

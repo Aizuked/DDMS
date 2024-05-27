@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Identity;
 
-public class UserListViewModel : ListBaseFilter
+public class UserListViewModel : ListPaginationFilter
 {
     public List<UserListDto> UserListDtos { get; set; } = [];
 }

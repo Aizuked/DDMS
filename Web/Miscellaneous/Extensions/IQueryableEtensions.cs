@@ -4,14 +4,15 @@ namespace Web.Miscellaneous.Extensions;
 
 public static class IQueryableEtensions
 {
-    public static IQueryable<T> Filter<T>(
+    public static IQueryable<T> Paginate<T, LPF>(
         this IQueryable<T> query,
-        ListBaseFilter filter
+        LPF paginationFilter
     ) where T : class
+      where LPF : ListPaginationFilter
     {
         return
             query
-                .Skip(filter.PageSize * filter.CurrentPage)
-                .Take(filter.PageSize);
+                .Skip(paginationFilter.PageSize * paginationFilter.CurrentPage)
+                .Take(paginationFilter.PageSize);
     }
 }

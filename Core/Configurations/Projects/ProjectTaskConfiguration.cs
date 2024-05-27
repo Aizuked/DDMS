@@ -29,6 +29,10 @@ public class ProjectTaskConfiguration : BaseEntityConfiguration<ProjectTask>
                .WithMany()
                .HasForeignKey(p => p.ParentTaskId);
 
+        builder.HasOne(p => p.Project)
+               .WithMany()
+               .HasForeignKey(p => p.ProjectId);
+
         builder.HasOne(p => p.Status)
                .WithMany()
                .HasForeignKey(p => p.StatusId)

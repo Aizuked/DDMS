@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Files;
 
-public class LocalFileListViewModel : ListBaseFilter
+public class LocalFileListViewModel : ListPaginationFilter
 {
     public List<LocalFileListDto> LocalFileListDtos { get; set; } = [];
 }

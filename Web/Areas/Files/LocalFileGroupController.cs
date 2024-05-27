@@ -15,7 +15,7 @@ namespace Web.Areas.Files;
 
 public class LocalFileGroupController(DdmsDbContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    public async Task<IActionResult> List(ListBaseFilter filter)
+    public async Task<IActionResult> List(ListPaginationFilter filter)
     {
         if (
             !User.IsInRole(ROLES_ADMIN) ||
@@ -25,13 +25,15 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
 
         var fileGroupQuery =
             context
-                .LocalFileGroups;
+                .LocalFileGroups
+                .Where(i => !i.IsDeleted)
+                .AsQueryable();
 
         var fileGroupDtos =
             await
                 fileGroupQuery
                     .ProjectTo<LocalFileGroupListDto>(mapper.ConfigurationProvider)
-                    .Filter(filter)
+                    .Paginate(filter)
                     .ToListAsync();
 
         var viewModel = new LocalFileGroupListViewModel
@@ -60,7 +62,7 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
                     .Where(i => i.Id == id)
                     .ProjectTo<LocalFileGroupEditDto>(mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync()
-                ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
+            ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
 
         var viewModel = new LocalFileGroupEditViewModel
         {
@@ -71,7 +73,30 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
     }
 
     [HttpPost]
-    public async Task Edit([FromRoute] int id, [FromBody] LocalFileGroupEditDto dto)
+    public async Task Edit(LocalFileGroupEditDto dto)
+    {
+        if (
+            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_TEACHER)
+        )
+            throw new NoRightsException();
+
+        var localFileGroup =
+            await
+                context
+                    .LocalFileGroups
+                    .Where(i => i.Id == dto.Id)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
+
+        mapper.Map(dto, localFileGroup);
+        await context.SaveChangesAsync();
+
+        toastify.Success(NOTIFY_SUCCESS);
+    }
+
+    [HttpPost]
+    public async Task Delete(int id)
     {
         if (
             !User.IsInRole(ROLES_ADMIN) ||
@@ -87,7 +112,8 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
                     .FirstOrDefaultAsync()
             ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
 
-        mapper.Map(dto, localFileGroup);
+        localFileGroup.IsDeleted = true;
+
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);

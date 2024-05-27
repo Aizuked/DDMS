@@ -64,4 +64,8 @@ public class UserService
         await
             _userManager
                 .IsInRoleAsync(await UserByIdOrThrow(id), userRole);
+
+    public async ValueTask<bool> OwnsOrInRole(ClaimsPrincipal user, int userId, string userRole) =>
+        user.IsInRole(userRole) ||
+        (await GetCurrentOrThrow(user)).Id == userId;
 }

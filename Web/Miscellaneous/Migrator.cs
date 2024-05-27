@@ -78,7 +78,7 @@ public static class Migrator
                 Description = ""
             }
         };
-        await context.AddRangeAsync(facets);
+        context.AddRange(facets);
         await context.SaveChangesAsync();
 
         var facetIds =
@@ -118,7 +118,7 @@ public static class Migrator
                 FacetId =     facetIds["project_status"]
             },
         };
-        await context.AddRangeAsync(facetItems_project_status);
+        context.AddRange(facetItems_project_status);
         await context.SaveChangesAsync();
         #endregion
 
@@ -168,7 +168,7 @@ public static class Migrator
                 FacetId =     facetIds["task_status"]
             },
         };
-        await context.AddRangeAsync(facetItems_task_status);
+        context.AddRange(facetItems_task_status);
         await context.SaveChangesAsync();
         #endregion
 
@@ -232,7 +232,7 @@ public static class Migrator
                 FacetId =     facetIds["question_type"]
             },
         };
-        await context.AddRangeAsync(facetItems_question_type);
+        context.AddRange(facetItems_question_type);
         await context.SaveChangesAsync();
         #endregion
 
@@ -254,7 +254,7 @@ public static class Migrator
                 FacetId =     facetIds["questionnaire_type"]
             },
         };
-        await context.AddRangeAsync(facetItems_questionnaire_type);
+        context.AddRange(facetItems_questionnaire_type);
         await context.SaveChangesAsync();
         #endregion
     }
@@ -279,7 +279,7 @@ public static class Migrator
                 NormalizedName = ROLES_STUDENT.ToLower()
             }
         };
-        await context.AddRangeAsync(userRoles);
+        context.AddRange(userRoles);
         await context.SaveChangesAsync();
 
         var userRoleIds =
@@ -329,7 +329,7 @@ public static class Migrator
             },
         };
 
-        await context.AddRangeAsync(users);
+        context.AddRange(users);
         await context.SaveChangesAsync();
     }
 }

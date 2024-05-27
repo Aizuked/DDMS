@@ -3,7 +3,7 @@ using Core.Models.Identity;
 
 namespace Core.Dto.Identity;
 
-public class UserEditDto
+public class UserEditDto : BaseEntityDto
 {
     public string FirstName { get; set; } = string.Empty;
 

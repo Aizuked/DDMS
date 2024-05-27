@@ -20,6 +20,10 @@ public class ProjectTask : BaseEntity
 
     public virtual ProjectTask? ParentTask { get; set; }
 
+    public int ProjectId { get; set; }
+
+    public virtual Project Project { get; set; } = null!;
+
     public int StatusId { get; set; }
 
     /// <summary>

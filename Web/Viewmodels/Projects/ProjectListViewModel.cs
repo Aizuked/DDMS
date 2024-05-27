@@ -2,7 +2,7 @@
 
 namespace Web.Viewmodels.Projects;
 
-public class ProjectListViewModel : ListBaseFilter
+public class ProjectListViewModel : ListPaginationFilter
 {
-    public List<ProjectListDto> ProjectDetailsDtos { get; set; } = [];
+    public List<ProjectListDto> ProjectListDtos { get; set; } = [];
 }

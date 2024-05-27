@@ -4,9 +4,9 @@ namespace Web.Viewmodels.Identity;
 
 public class UserDetailsViewModel
 {
-    public bool IsSelf { get; set; }
+    public bool CanEdit { get; set; }
 
-    public List<string> CurrentUserRole { get; set; } = [];
+    public bool CanGrantRole { get; set; }
 
     public UserDetailsDto UserDetailsDto { get; set; } = new();
 }

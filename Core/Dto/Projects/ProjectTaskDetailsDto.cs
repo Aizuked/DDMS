@@ -16,6 +16,8 @@ public class ProjectTaskDetailsDto : BaseEntityDto
 
     public DateTime? DateTimeEnd { get; set; }
 
+    public ProjectListDto ProjectListDto { get; set; } = new();
+
     public ProjectTaskListDto? ParentTask { get; set; }
 
     public UserListDto Author { get; set; } = new();
