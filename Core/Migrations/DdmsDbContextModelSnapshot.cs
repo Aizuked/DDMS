@@ -433,7 +433,7 @@ namespace Core.Migrations
                     b.Property<int>("TeacherId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("ThemeId")
+                    b.Property<int?>("ThemeId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Updated")
@@ -485,6 +485,9 @@ namespace Core.Migrations
                     b.Property<int?>("ParentTaskId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("ProjectId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Readiness")
                         .HasColumnType("integer");
 
@@ -499,6 +502,8 @@ namespace Core.Migrations
                     b.HasIndex("AuthorId");
 
                     b.HasIndex("ParentTaskId");
+
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("StatusId");
 
@@ -685,7 +690,7 @@ namespace Core.Migrations
                     b.Property<bool>("IsProven")
                         .HasColumnType("boolean");
 
-                    b.Property<int?>("ThemeId")
+                    b.Property<int?>("SuggestedThemeId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Updated")
@@ -697,7 +702,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThemeId");
+                    b.HasIndex("SuggestedThemeId");
 
                     b.ToTable("KeyWords");
                 });
@@ -714,12 +719,12 @@ namespace Core.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ThemeId")
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ThemeId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("SuggestedThemes");
                 });
@@ -741,16 +746,13 @@ namespace Core.Migrations
                     b.Property<bool>("IsApproved")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsChangeRequested")
-                        .HasColumnType("boolean");
-
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<bool>("IsProcessed")
-                        .HasColumnType("boolean");
-
                     b.Property<int?>("SelectedThemeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("SelectedThemeToChangeId")
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset>("Updated")
@@ -761,6 +763,8 @@ namespace Core.Migrations
                     b.HasIndex("ApproverId");
 
                     b.HasIndex("SelectedThemeId");
+
+                    b.HasIndex("SelectedThemeToChangeId");
 
                     b.ToTable("Themes");
                 });
@@ -877,9 +881,7 @@ namespace Core.Migrations
 
                     b.HasOne("Core.Models.Themes.Theme", "Theme")
                         .WithMany()
-                        .HasForeignKey("ThemeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ThemeId");
 
                     b.Navigation("Status");
 
@@ -902,6 +904,12 @@ namespace Core.Migrations
                         .WithMany("LinkedTasks")
                         .HasForeignKey("ParentTaskId");
 
+                    b.HasOne("Core.Models.Projects.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Core.Models.Facets.FacetItem", "Status")
                         .WithMany()
                         .HasForeignKey("StatusId")
@@ -911,6 +919,8 @@ namespace Core.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("ParentTask");
+
+                    b.Navigation("Project");
 
                     b.Navigation("Status");
                 });
@@ -985,16 +995,20 @@ namespace Core.Migrations
 
             modelBuilder.Entity("Core.Models.Themes.KeyWord", b =>
                 {
-                    b.HasOne("Core.Models.Themes.Theme", null)
+                    b.HasOne("Core.Models.Themes.SuggestedTheme", null)
                         .WithMany("KeyWords")
-                        .HasForeignKey("ThemeId");
+                        .HasForeignKey("SuggestedThemeId");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.SuggestedTheme", b =>
                 {
-                    b.HasOne("Core.Models.Themes.Theme", null)
-                        .WithMany("SuggestedThemes")
-                        .HasForeignKey("ThemeId");
+                    b.HasOne("Core.Models.Identity.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.Theme", b =>
@@ -1007,9 +1021,15 @@ namespace Core.Migrations
                         .WithMany()
                         .HasForeignKey("SelectedThemeId");
 
+                    b.HasOne("Core.Models.Themes.SuggestedTheme", "SelectedThemeToChange")
+                        .WithMany()
+                        .HasForeignKey("SelectedThemeToChangeId");
+
                     b.Navigation("Approver");
 
                     b.Navigation("SelectedTheme");
+
+                    b.Navigation("SelectedThemeToChange");
                 });
 
             modelBuilder.Entity("Core.Models.Chats.Chat", b =>
@@ -1060,11 +1080,9 @@ namespace Core.Migrations
                     b.Navigation("Answers");
                 });
 
-            modelBuilder.Entity("Core.Models.Themes.Theme", b =>
+            modelBuilder.Entity("Core.Models.Themes.SuggestedTheme", b =>
                 {
                     b.Navigation("KeyWords");
-
-                    b.Navigation("SuggestedThemes");
                 });
 #pragma warning restore 612, 618
         }

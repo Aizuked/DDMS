@@ -111,40 +111,20 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectTasks",
+                name: "SuggestedThemes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DisplayName = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Readiness = table.Column<int>(type: "integer", nullable: false),
-                    DateTimeStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    DateTimeEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ParentTaskId = table.Column<int>(type: "integer", nullable: true),
-                    StatusId = table.Column<int>(type: "integer", nullable: false),
-                    AuthorId = table.Column<int>(type: "integer", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectTasks", x => x.Id);
+                    table.PrimaryKey("PK_SuggestedThemes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectTasks_FacetItems_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "FacetItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ProjectTasks_ProjectTasks_ParentTaskId",
-                        column: x => x.ParentTaskId,
-                        principalTable: "ProjectTasks",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ProjectTasks_User_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_SuggestedThemes_User_UserId",
+                        column: x => x.UserId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -182,33 +162,61 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comments",
+                name: "KeyWords",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Text = table.Column<string>(type: "text", nullable: false),
-                    IsPrivate = table.Column<bool>(type: "boolean", nullable: false),
-                    AuthorId = table.Column<int>(type: "integer", nullable: false),
-                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
+                    Word = table.Column<string>(type: "text", nullable: false),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
+                    IsProven = table.Column<bool>(type: "boolean", nullable: false),
+                    SuggestedThemeId = table.Column<int>(type: "integer", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.PrimaryKey("PK_KeyWords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_ProjectTasks_ProjectTaskId",
-                        column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTasks",
+                        name: "FK_KeyWords_SuggestedThemes_SuggestedThemeId",
+                        column: x => x.SuggestedThemeId,
+                        principalTable: "SuggestedThemes",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Themes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
+                    SelectedThemeId = table.Column<int>(type: "integer", nullable: true),
+                    SelectedThemeToChangeId = table.Column<int>(type: "integer", nullable: true),
+                    ApproverId = table.Column<int>(type: "integer", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Themes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Themes_SuggestedThemes_SelectedThemeId",
+                        column: x => x.SelectedThemeId,
+                        principalTable: "SuggestedThemes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comments_User_AuthorId",
-                        column: x => x.AuthorId,
+                        name: "FK_Themes_SuggestedThemes_SelectedThemeToChangeId",
+                        column: x => x.SelectedThemeToChangeId,
+                        principalTable: "SuggestedThemes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Themes_User_ApproverId",
+                        column: x => x.ApproverId,
                         principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -271,45 +279,45 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocalFiles",
+                name: "Projects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PhysicalPath = table.Column<string>(type: "text", nullable: false),
+                    Code = table.Column<string>(type: "text", nullable: false),
                     DisplayName = table.Column<string>(type: "text", nullable: false),
-                    MimeType = table.Column<string>(type: "text", nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    UploaderId = table.Column<int>(type: "integer", nullable: false),
-                    LocalFileGroupId = table.Column<int>(type: "integer", nullable: false),
-                    CommentId = table.Column<int>(type: "integer", nullable: true),
-                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
+                    IsPublic = table.Column<bool>(type: "boolean", nullable: false),
+                    StudentId = table.Column<int>(type: "integer", nullable: false),
+                    TeacherId = table.Column<int>(type: "integer", nullable: false),
+                    StatusId = table.Column<int>(type: "integer", nullable: false),
+                    ThemeId = table.Column<int>(type: "integer", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LocalFiles", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LocalFiles_Comments_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comments",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_LocalFiles_LocalFileGroups_LocalFileGroupId",
-                        column: x => x.LocalFileGroupId,
-                        principalTable: "LocalFileGroups",
+                        name: "FK_Projects_FacetItems_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "FacetItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LocalFiles_ProjectTasks_ProjectTaskId",
-                        column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTasks",
+                        name: "FK_Projects_Themes_ThemeId",
+                        column: x => x.ThemeId,
+                        principalTable: "Themes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_LocalFiles_User_UploaderId",
-                        column: x => x.UploaderId,
+                        name: "FK_Projects_User_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Projects_User_TeacherId",
+                        column: x => x.TeacherId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -363,6 +371,58 @@ namespace Core.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Chats_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProjectTasks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DisplayName = table.Column<string>(type: "text", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: true),
+                    Readiness = table.Column<int>(type: "integer", nullable: false),
+                    DateTimeStart = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    DateTimeEnd = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ParentTaskId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectId = table.Column<int>(type: "integer", nullable: false),
+                    StatusId = table.Column<int>(type: "integer", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectTasks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProjectTasks_FacetItems_StatusId",
+                        column: x => x.StatusId,
+                        principalTable: "FacetItems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectTasks_ProjectTasks_ParentTaskId",
+                        column: x => x.ParentTaskId,
+                        principalTable: "ProjectTasks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProjectTasks_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProjectTasks_User_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -384,6 +444,36 @@ namespace Core.Migrations
                     table.ForeignKey(
                         name: "FK_ChatUser_User_ParticipantsId",
                         column: x => x.ParticipantsId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Comments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Text = table.Column<string>(type: "text", nullable: false),
+                    IsPrivate = table.Column<bool>(type: "boolean", nullable: false),
+                    AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Comments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Comments_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
+                        principalTable: "ProjectTasks",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comments_User_AuthorId",
+                        column: x => x.AuthorId,
                         principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -420,106 +510,48 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "KeyWords",
+                name: "LocalFiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Word = table.Column<string>(type: "text", nullable: false),
-                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
-                    IsProven = table.Column<bool>(type: "boolean", nullable: false),
-                    ThemeId = table.Column<int>(type: "integer", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_KeyWords", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Code = table.Column<string>(type: "text", nullable: false),
+                    PhysicalPath = table.Column<string>(type: "text", nullable: false),
                     DisplayName = table.Column<string>(type: "text", nullable: false),
-                    IsPublic = table.Column<bool>(type: "boolean", nullable: false),
-                    StudentId = table.Column<int>(type: "integer", nullable: false),
-                    TeacherId = table.Column<int>(type: "integer", nullable: false),
-                    StatusId = table.Column<int>(type: "integer", nullable: false),
-                    ThemeId = table.Column<int>(type: "integer", nullable: false),
+                    MimeType = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    UploaderId = table.Column<int>(type: "integer", nullable: false),
+                    LocalFileGroupId = table.Column<int>(type: "integer", nullable: false),
+                    CommentId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
                     Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
                     Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.PrimaryKey("PK_LocalFiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Projects_FacetItems_StatusId",
-                        column: x => x.StatusId,
-                        principalTable: "FacetItems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_User_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Projects_User_TeacherId",
-                        column: x => x.TeacherId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SuggestedThemes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Text = table.Column<string>(type: "text", nullable: false),
-                    ThemeId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SuggestedThemes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Themes",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IsProcessed = table.Column<bool>(type: "boolean", nullable: false),
-                    IsApproved = table.Column<bool>(type: "boolean", nullable: false),
-                    IsChangeRequested = table.Column<bool>(type: "boolean", nullable: false),
-                    SelectedThemeId = table.Column<int>(type: "integer", nullable: true),
-                    ApproverId = table.Column<int>(type: "integer", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Themes", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Themes_SuggestedThemes_SelectedThemeId",
-                        column: x => x.SelectedThemeId,
-                        principalTable: "SuggestedThemes",
+                        name: "FK_LocalFiles_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Themes_User_ApproverId",
-                        column: x => x.ApproverId,
-                        principalTable: "User",
+                        name: "FK_LocalFiles_LocalFileGroups_LocalFileGroupId",
+                        column: x => x.LocalFileGroupId,
+                        principalTable: "LocalFileGroups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
+                        principalTable: "ProjectTasks",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_LocalFiles_User_UploaderId",
+                        column: x => x.UploaderId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -558,9 +590,9 @@ namespace Core.Migrations
                 column: "FacetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KeyWords_ThemeId",
+                name: "IX_KeyWords_SuggestedThemeId",
                 table: "KeyWords",
-                column: "ThemeId");
+                column: "SuggestedThemeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LocalFiles_CommentId",
@@ -623,6 +655,11 @@ namespace Core.Migrations
                 column: "ParentTaskId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProjectTasks_ProjectId",
+                table: "ProjectTasks",
+                column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProjectTasks_StatusId",
                 table: "ProjectTasks",
                 column: "StatusId");
@@ -658,9 +695,9 @@ namespace Core.Migrations
                 column: "TypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SuggestedThemes_ThemeId",
+                name: "IX_SuggestedThemes_UserId",
                 table: "SuggestedThemes",
-                column: "ThemeId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Themes_ApproverId",
@@ -672,47 +709,15 @@ namespace Core.Migrations
                 table: "Themes",
                 column: "SelectedThemeId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Chats_Projects_ProjectId",
-                table: "Chats",
-                column: "ProjectId",
-                principalTable: "Projects",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_KeyWords_Themes_ThemeId",
-                table: "KeyWords",
-                column: "ThemeId",
-                principalTable: "Themes",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Projects_Themes_ThemeId",
-                table: "Projects",
-                column: "ThemeId",
-                principalTable: "Themes",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_SuggestedThemes_Themes_ThemeId",
-                table: "SuggestedThemes",
-                column: "ThemeId",
-                principalTable: "Themes",
-                principalColumn: "Id");
+            migrationBuilder.CreateIndex(
+                name: "IX_Themes_SelectedThemeToChangeId",
+                table: "Themes",
+                column: "SelectedThemeToChangeId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Themes_User_ApproverId",
-                table: "Themes");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_SuggestedThemes_Themes_ThemeId",
-                table: "SuggestedThemes");
-
             migrationBuilder.DropTable(
                 name: "Answers");
 
@@ -756,16 +761,16 @@ namespace Core.Migrations
                 name: "FacetItems");
 
             migrationBuilder.DropTable(
-                name: "Facets");
-
-            migrationBuilder.DropTable(
-                name: "User");
-
-            migrationBuilder.DropTable(
                 name: "Themes");
 
             migrationBuilder.DropTable(
+                name: "Facets");
+
+            migrationBuilder.DropTable(
                 name: "SuggestedThemes");
+
+            migrationBuilder.DropTable(
+                name: "User");
         }
     }
 }
