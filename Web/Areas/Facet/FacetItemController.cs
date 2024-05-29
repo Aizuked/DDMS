@@ -67,7 +67,7 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
     }
 
     [HttpPost]
-    public async Task Edit(FacetEditDto dto)
+    public async Task Edit(FacetItemEditDto dto)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();

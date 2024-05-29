@@ -10,26 +10,17 @@ public class ThemeConfiguration : BaseEntityConfiguration<Theme>
     {
         base.Configure(builder);
 
-        builder.Property(p => p.IsProcessed)
-               .IsRequired();
-
         builder.Property(p => p.IsApproved)
-               .IsRequired();
-
-        builder.Property(p => p.IsChangeRequested)
                .IsRequired();
 
         builder.HasOne<SuggestedTheme>(p => p.SelectedTheme)
                .WithOne();
 
+        builder.HasOne<SuggestedTheme>(p => p.SelectedThemeToChange)
+               .WithOne();
+
         builder.HasOne<User>(p => p.Approver)
                .WithMany()
                .HasForeignKey(p => p.ApproverId);
-
-        builder.HasMany<SuggestedTheme>(p => p.SuggestedThemes)
-               .WithOne();
-
-        builder.HasMany<KeyWord>(p => p.KeyWords)
-               .WithOne();
     }
 }

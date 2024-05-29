@@ -44,7 +44,7 @@ public class UserController(IdentityContext context, UserService userService, IM
         var viewModel = new UserDetailsViewModel
         {
             CanEdit = await userService.OwnsOrInRole(User, id, ROLES_ADMIN),
-            CanGrantRole = User.IsInRole(ROLES_ADMIN),
+            CanModifyRoles = User.IsInRole(ROLES_ADMIN),
             UserDetailsDto = mapper.Map<UserDetailsDto>(await userService.UserByIdOrThrow(id))
         };
 

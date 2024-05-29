@@ -22,6 +22,8 @@ public class ProjectDetailsDto : BaseEntityDto
 
     public string? ThemeSelectedThemeText { get; set; }
 
+    public int? ThemeId { get; set; }
+
     public bool ThemeIsApproved { get; set; }
 
     public bool ThemeIsChangeRequested { get; set; }

@@ -96,7 +96,7 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
         toastify.Success(NOTIFY_SUCCESS);
     }
 
-    [HttpPatch]
+    [HttpPost]
     public async Task Delete(int id)
     {
         var chatQuery =

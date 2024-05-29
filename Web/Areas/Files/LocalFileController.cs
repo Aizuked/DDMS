@@ -113,7 +113,7 @@ public class LocalFileController(DdmsDbContext context, UserService userService,
         toastify.Success(NOTIFY_SUCCESS);
     }
 
-    [HttpPatch]
+    [HttpPost]
     public async Task Delete(int id)
     {
         var localFile =

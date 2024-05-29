@@ -54,6 +54,18 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
 
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
+        if (
+            projectTask.ProjectListDto.Student.Id != userId ||
+            projectTask.ProjectListDto.Teacher.Id != userId ||
+            !User.IsInRole(ROLES_ADMIN)
+        )
+            projectTask.Comments =
+                projectTask
+                    .Comments
+                    .Where(i => i is { IsDeleted: false, IsPrivate: false })
+                    .Select(i => i)
+                    .ToList();
+
         var viewModel = new ProjectTaskDetailsViewModel
         {
             CanEdit =
@@ -95,7 +107,7 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
     }
 
     [HttpPost]
-    public async Task Edit(ProjectEditDto dto)
+    public async Task Edit(ProjectTaskEditDto dto)
     {
         var projectTask =
             await
@@ -122,7 +134,7 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         toastify.Success(NOTIFY_SUCCESS);
     }
 
-    [HttpPatch]
+    [HttpPost]
     public async Task Delete(int id)
     {
         var projectTask =

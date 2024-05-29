@@ -130,4 +130,98 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
 
         toastify.Success(NOTIFY_SUCCESS);
     }
+
+    [HttpPost]
+    public async Task SelectTheme(int projectId, int suggestedThemeId)
+    {
+        var project =
+            await
+                context
+                    .Projects
+                    .Include(project => project.Theme)
+                    .Where(i => i.Id == projectId)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти указанный проект.");
+
+        if (!await userService.OwnsOrInRole(User, project.StudentId, ROLES_TEACHER))
+            throw new NoRightsException();
+
+        var suggestedTheme =
+            await
+                context
+                    .SuggestedThemes
+                    .Where(i => i.Id == suggestedThemeId)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти указанную тему.");
+
+        if (!await userService.OwnsOrInRole(User, suggestedTheme.UserId, ROLES_TEACHER))
+            throw new NoRightsException();
+
+        var theme =
+            project.Theme
+            ?? new Core.Models.Themes.Theme
+            {
+                SelectedThemeId = suggestedTheme.Id
+            };
+
+        if (theme.Id == default)
+        {
+            context.Add(theme);
+            await context.SaveChangesAsync();
+
+            project.ThemeId = theme.Id;
+            await context.SaveChangesAsync();
+        }
+        else
+        {
+            theme.ApproverId = null;
+            theme.Approver = null;
+            theme.IsApproved = false;
+            theme.SelectedThemeToChangeId = suggestedTheme.Id;
+
+            await context.SaveChangesAsync();
+        }
+
+        toastify.Success(NOTIFY_SUCCESS);
+    }
+
+    [HttpPost]
+    public async Task ApproveTheme(int id)
+    {
+        var theme =
+            await
+                context
+                    .Themes
+                    .Where(i => i.Id == id)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти указанную тему.");
+
+        if (theme.IsApproved)
+            return;
+
+        var project =
+            await
+                context
+                    .Projects
+                    .Where(i => i.ThemeId == id)
+                    .FirstOrDefaultAsync()
+            ?? throw new NotifiableException("Не удалось найти проект с такой темой.");
+
+        if (!await userService.OwnsOrInRole(User, project.TeacherId, ROLES_TEACHER))
+            throw new NoRightsException();
+
+        theme.ApproverId = (await userService.GetCurrentOrThrow(User)).Id;
+        theme.IsApproved = true;
+
+        if (theme.SelectedThemeToChangeId.HasValue)
+        {
+            theme.SelectedThemeId = theme.SelectedThemeToChangeId;
+            theme.SelectedThemeToChangeId = null;
+            theme.SelectedThemeToChange = null;
+        }
+
+        await context.SaveChangesAsync();
+
+        toastify.Success(NOTIFY_SUCCESS);
+    }
 }

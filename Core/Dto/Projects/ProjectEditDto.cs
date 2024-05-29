@@ -16,8 +16,6 @@ public class ProjectEditDto : BaseEntityDto
     public int TeacherId { get; set; }
 
     public int StatusId { get; set; }
-
-    public int ThemeId { get; set; }
 }
 
 public partial class ProjectEditDtoProfile : Profile

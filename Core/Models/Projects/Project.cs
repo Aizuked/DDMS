@@ -27,7 +27,7 @@ public class Project : BaseEntity
     /// </summary>
     public virtual FacetItem Status { get; set; } = null!;
 
-    public int ThemeId { get; set; }
+    public int? ThemeId { get; set; }
 
-    public virtual Theme Theme { get; set; } = null!;
+    public virtual Theme? Theme { get; set; } = null!;
 }

@@ -16,5 +16,10 @@ public class SuggestedThemeConfiguration<TEntity> : IEntityTypeConfiguration<TEn
         builder.Property(p => p.Text)
                .HasMaxLength(512)
                .IsRequired();
+
+        builder.HasOne(p => p.User)
+               .WithMany()
+               .HasForeignKey(p => p.UserId)
+               .IsRequired();
     }
 }
