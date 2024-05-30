@@ -30,4 +30,13 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Views\Chat\" />
+      <Folder Include="Views\Facet\" />
+      <Folder Include="Views\Identity\" />
+      <Folder Include="Views\Project\" />
+      <Folder Include="Views\Questionnaire\" />
+      <Folder Include="Views\Theme\" />
+    </ItemGroup>
+
 </Project>
