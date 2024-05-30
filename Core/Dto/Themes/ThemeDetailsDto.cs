@@ -8,8 +8,6 @@ public class ThemeDetailsDto : BaseEntityDto
 {
     public bool IsApproved { get; set; }
 
-    public bool IsChangeRequested { get; set; }
-
     public int? SelectedThemeId { get; set; }
 
     public string SelectedThemeText { get; set; } = string.Empty;
@@ -21,8 +19,6 @@ public class ThemeDetailsDto : BaseEntityDto
     public int? ApproverId { get; set; }
 
     public UserListDto? Approver { get; set; }
-
-    public virtual ICollection<KeyWordListDto> KeyWords { get; set; } = [];
 }
 
 public partial class ThemeDetailsDtoProfile : Profile

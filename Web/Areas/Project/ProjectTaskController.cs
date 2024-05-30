@@ -55,8 +55,8 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
         if (
-            projectTask.ProjectListDto.Student.Id != userId ||
-            projectTask.ProjectListDto.Teacher.Id != userId ||
+            projectTask.Project.Student.Id != userId ||
+            projectTask.Project.Teacher.Id != userId ||
             !User.IsInRole(ROLES_ADMIN)
         )
             projectTask.Comments =
@@ -70,8 +70,8 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         {
             CanEdit =
                 User.IsInRole(ROLES_ADMIN) ||
-                projectTask.ProjectListDto.Teacher.Id == userId ||
-                projectTask.ProjectListDto.Student.Id == userId,
+                projectTask.Project.Teacher.Id == userId ||
+                projectTask.Project.Student.Id == userId,
             ProjectTaskDetailsDto = projectTask
         };
 

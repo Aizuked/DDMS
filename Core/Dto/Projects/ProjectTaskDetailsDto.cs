@@ -16,7 +16,7 @@ public class ProjectTaskDetailsDto : BaseEntityDto
 
     public DateTime? DateTimeEnd { get; set; }
 
-    public ProjectListDto ProjectListDto { get; set; } = new();
+    public ProjectListDto Project { get; set; } = new();
 
     public ProjectTaskListDto? ParentTask { get; set; }
 
@@ -34,6 +34,6 @@ public partial class ProjectTaskDetailsDtoProfile : Profile
     public ProjectTaskDetailsDtoProfile()
     {
         CreateMap<ProjectTask, ProjectTaskDetailsDto>()
-            .ForMember(dto => dto.LocalFilesIds, opts => opts.MapFrom(entity => entity.LocalFiles.Select(i => i.Id)));
+            .ForMember(i => i.LocalFilesIds, opt => opt.MapFrom(i => i.LocalFiles.Select(j => j.Id)));
     }
 }

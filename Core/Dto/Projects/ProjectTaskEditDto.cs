@@ -42,6 +42,8 @@ public partial class ProjectTaskEditDtoProfile : Profile
             .ForMember(i => i.LocalFiles, opt => opt.MapFrom(j => j.LocalFileIds))
             .ForMember(i => i.IsDeleted, opt => opt.Ignore())
             .ForMember(i => i.Created, opt => opt.Ignore())
-            .ForMember(i => i.Updated, opt => opt.Ignore());
+            .ForMember(i => i.Updated, opt => opt.Ignore())
+            .ForMember(i => i.Project, opt => opt.Ignore())
+            .ForMember(i => i.ProjectId, opt => opt.Ignore());
     }
 }

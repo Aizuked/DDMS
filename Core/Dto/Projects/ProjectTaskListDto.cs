@@ -15,7 +15,7 @@ public class ProjectTaskListDto : BaseEntityDto
 
     public string StatusDisplayName { get; set; } = string.Empty;
 
-    public ProjectListDto ProjectListDto { get; set; } = new();
+    public ProjectListDto Project { get; set; } = new();
 }
 
 public partial class ProjectTaskListDtoProfile : Profile

@@ -25,8 +25,6 @@ public class ProjectDetailsDto : BaseEntityDto
     public int? ThemeId { get; set; }
 
     public bool ThemeIsApproved { get; set; }
-
-    public bool ThemeIsChangeRequested { get; set; }
 }
 
 public partial class ProjectDetailsDtoProfile : Profile

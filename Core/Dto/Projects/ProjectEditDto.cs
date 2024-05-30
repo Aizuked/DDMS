@@ -30,6 +30,7 @@ public partial class ProjectEditDtoProfile : Profile
             .ForMember(i => i.Theme, opt => opt.Ignore())
             .ForMember(i => i.IsDeleted, opt => opt.Ignore())
             .ForMember(i => i.Created, opt => opt.Ignore())
-            .ForMember(i => i.Updated, opt => opt.Ignore());
+            .ForMember(i => i.Updated, opt => opt.Ignore())
+            .ForMember(i => i.ThemeId, opt => opt.Ignore());
     }
 }

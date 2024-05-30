@@ -29,5 +29,5 @@ public class Project : BaseEntity
 
     public int? ThemeId { get; set; }
 
-    public virtual Theme? Theme { get; set; } = null!;
+    public virtual Theme? Theme { get; set; }
 }

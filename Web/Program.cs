@@ -26,7 +26,7 @@ builder.Services.AddDbContext<IdentityContext>(
     options =>
     {
         options.UseNpgsql(
-            builder.Configuration.GetConnectionString("DefaultConnection")
+            builder.Configuration.GetConnectionString("DefaultConnectionIdentity")
         );
     }
 );

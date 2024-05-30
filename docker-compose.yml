@@ -6,6 +6,7 @@
       dockerfile: Web/Dockerfile
     environment:
       - ConnectionStrings__DefaultConnection=${DEFAULT_CONNECTION}
+      - ConnectionStrings__DefaultConnectionIdentity=${DEFAULT_CONNECTION_IDENTITY}
       - Files__BasePath=${FILES_BASE_PATH}
       - Files__Images__Dimensions__MaxWidth=${FILES_IMAGE_DIMENSIONS_MAX_WIDTH}
       - Files__Images__Dimensions__MaxHeight=${FILES_IMAGE_DIMENSIONS_MAX_HEIGHT}

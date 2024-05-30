@@ -13,13 +13,12 @@ public static class Migrator
     {
         using var scope = app.ApplicationServices.CreateScope();
         await using var context = scope.ServiceProvider.GetService<T>();
-        if (
-            context == null ||
-            !(await context.Database.GetPendingMigrationsAsync()).Any()
-        )
+
+        if (context == null)
             return;
 
-        await context.Database.MigrateAsync();
+        if ((await context.Database.GetPendingMigrationsAsync()).Any())
+            await context.Database.MigrateAsync();
 
         switch (context)
         {
@@ -41,6 +40,15 @@ public static class Migrator
 
     private async static Task SeedMainContext(DdmsDbContext context)
     {
+        var test =
+            await
+                context
+                    .Facets
+                    .AnyAsync(i => i.Code == "project_status");
+
+        if (test)
+            return;
+
         await SeedFacets(context);
     }
 
@@ -261,6 +269,15 @@ public static class Migrator
 
     private async static Task SeedIdentityRoles(IdentityContext context)
     {
+        var test =
+            await
+                context
+                    .Roles
+                    .AnyAsync(i => i.Name == ROLES_ADMIN);
+
+        if (test)
+            return;
+
         var userRoles = new List<IdentityRole<int>>
         {
             new()
@@ -330,6 +347,32 @@ public static class Migrator
         };
 
         context.AddRange(users);
+        await context.SaveChangesAsync();
+
+        var userIds =
+            users
+                .ToImmutableDictionary(k => k.UserName!, v => v.Id);
+
+        var identityUserRoles = new List<IdentityUserRole<int>>
+        {
+            new()
+            {
+                UserId = userIds["admin"],
+                RoleId = userRoleIds[ROLES_ADMIN],
+            },
+            new()
+            {
+                UserId = userIds["teacher"],
+                RoleId = userRoleIds[ROLES_TEACHER],
+            },
+            new()
+            {
+                UserId = userIds["student"],
+                RoleId = userRoleIds[ROLES_STUDENT],
+            },
+        };
+
+        context.AddRange(identityUserRoles);
         await context.SaveChangesAsync();
     }
 }
