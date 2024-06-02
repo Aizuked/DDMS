@@ -15,7 +15,7 @@ namespace Web.Areas.Chat;
 
 public class ChatController(DdmsDbContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    public async Task<IActionResult> List(ListPaginationFilter filter)
+    public async Task<IActionResult> List(ListPaginationFilter filter, ListPaginationFilter msgFilter, int? chatId)
     {
         var chatQuery =
             context
@@ -27,7 +27,8 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
 
         chatQuery =
             chatQuery
-                .Where(i => i.Participants.Select(j => j.Id).Contains(userId));
+                .Where(i => i.Participants.Select(j => j.Id).Contains(userId))
+                .OrderByDescending(i => i.Messages.OrderByDescending(j => j.TimeStamp));
 
         var chatListDtos =
             await
@@ -36,12 +37,27 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
                     .Paginate(filter)
                     .ToListAsync();
 
+        chatId ??=
+            await
+                chatQuery
+                    .Select(i => i.Id)
+                    .FirstOrDefaultAsync();
+
         var viewModel = new ChatListViewModel
         {
             PageCount = await chatQuery.CountAsync(),
             CurrentPage = filter.CurrentPage,
             PageSize = filter.PageSize,
-            ChatListDtos = chatListDtos
+            ChatListDtos = chatListDtos,
+            MessageListDtos =
+                await
+                    chatQuery
+                        .Where(i => i.Id == chatId)
+                        .Select(i => i.Messages)
+                        .ProjectTo<MessageListDto>(mapper.ConfigurationProvider)
+                        .Paginate(msgFilter)
+                        .ToListAsync(),
+            SelfId = userId
         };
 
         return View(viewModel);

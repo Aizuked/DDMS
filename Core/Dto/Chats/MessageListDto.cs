@@ -29,6 +29,8 @@ public class MessageListDto
 
     public string ProjectTaskStatusDisplayName { get; set; } = string.Empty;
 
+    public int SenderId { get; set; }
+
     public string? SenderDetailsPath { get; set; }
 
     public string? SenderProfilePicturePath { get; set; }
