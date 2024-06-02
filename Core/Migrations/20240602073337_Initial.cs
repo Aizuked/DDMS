@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Migrations
 {
     /// <inheritdoc />
-    public partial class Identity : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,7 +62,7 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Facet",
+                name: "Facets",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -77,11 +77,11 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Facet", x => x.Id);
+                    table.PrimaryKey("PK_Facets", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocalFileGroup",
+                name: "LocalFileGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -97,7 +97,7 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LocalFileGroup", x => x.Id);
+                    table.PrimaryKey("PK_LocalFileGroups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,7 +207,7 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SuggestedTheme",
+                name: "SuggestedThemes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -217,9 +217,9 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SuggestedTheme", x => x.Id);
+                    table.PrimaryKey("PK_SuggestedThemes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SuggestedTheme_AspNetUsers_UserId",
+                        name: "FK_SuggestedThemes_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -227,7 +227,7 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FacetItem",
+                name: "FacetItems",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -242,17 +242,17 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FacetItem", x => x.Id);
+                    table.PrimaryKey("PK_FacetItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FacetItem_Facet_FacetId",
+                        name: "FK_FacetItems_Facets_FacetId",
                         column: x => x.FacetId,
-                        principalTable: "Facet",
+                        principalTable: "Facets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "KeyWord",
+                name: "KeyWords",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -267,16 +267,16 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KeyWord", x => x.Id);
+                    table.PrimaryKey("PK_KeyWords", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_KeyWord_SuggestedTheme_SuggestedThemeId",
+                        name: "FK_KeyWords_SuggestedThemes_SuggestedThemeId",
                         column: x => x.SuggestedThemeId,
-                        principalTable: "SuggestedTheme",
+                        principalTable: "SuggestedThemes",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Theme",
+                name: "Themes",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -291,26 +291,26 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Theme", x => x.Id);
+                    table.PrimaryKey("PK_Themes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Theme_AspNetUsers_ApproverId",
+                        name: "FK_Themes_AspNetUsers_ApproverId",
                         column: x => x.ApproverId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Theme_SuggestedTheme_SelectedThemeId",
+                        name: "FK_Themes_SuggestedThemes_SelectedThemeId",
                         column: x => x.SelectedThemeId,
-                        principalTable: "SuggestedTheme",
+                        principalTable: "SuggestedThemes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Theme_SuggestedTheme_SelectedThemeToChangeId",
+                        name: "FK_Themes_SuggestedThemes_SelectedThemeToChangeId",
                         column: x => x.SelectedThemeToChangeId,
-                        principalTable: "SuggestedTheme",
+                        principalTable: "SuggestedThemes",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Questionnaire",
+                name: "Questionnaires",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -325,23 +325,23 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questionnaire", x => x.Id);
+                    table.PrimaryKey("PK_Questionnaires", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questionnaire_AspNetUsers_AuthorId",
+                        name: "FK_Questionnaires_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Questionnaire_FacetItem_TypeId",
+                        name: "FK_Questionnaires_FacetItems_TypeId",
                         column: x => x.TypeId,
-                        principalTable: "FacetItem",
+                        principalTable: "FacetItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Project",
+                name: "Projects",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -359,34 +359,63 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Project", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Project_AspNetUsers_StudentId",
+                        name: "FK_Projects_AspNetUsers_StudentId",
                         column: x => x.StudentId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Project_AspNetUsers_TeacherId",
+                        name: "FK_Projects_AspNetUsers_TeacherId",
                         column: x => x.TeacherId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Project_FacetItem_StatusId",
+                        name: "FK_Projects_FacetItems_StatusId",
                         column: x => x.StatusId,
-                        principalTable: "FacetItem",
+                        principalTable: "FacetItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Project_Theme_ThemeId",
+                        name: "FK_Projects_Themes_ThemeId",
                         column: x => x.ThemeId,
-                        principalTable: "Theme",
+                        principalTable: "Themes",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Question",
+                name: "QuestionnaireResults",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    IntervieweeId = table.Column<int>(type: "integer", nullable: false),
+                    QuestionnaireId = table.Column<int>(type: "integer", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionnaireResults", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_QuestionnaireResults_AspNetUsers_IntervieweeId",
+                        column: x => x.IntervieweeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionnaireResults_Questionnaires_QuestionnaireId",
+                        column: x => x.QuestionnaireId,
+                        principalTable: "Questionnaires",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -401,51 +430,22 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Question", x => x.Id);
+                    table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Question_FacetItem_TypeId",
+                        name: "FK_Questions_FacetItems_TypeId",
                         column: x => x.TypeId,
-                        principalTable: "FacetItem",
+                        principalTable: "FacetItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Question_Questionnaire_QuestionnaireId",
+                        name: "FK_Questions_Questionnaires_QuestionnaireId",
                         column: x => x.QuestionnaireId,
-                        principalTable: "Questionnaire",
+                        principalTable: "Questionnaires",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionnaireResult",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    IntervieweeId = table.Column<int>(type: "integer", nullable: false),
-                    QuestionnaireId = table.Column<int>(type: "integer", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    Created = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Updated = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionnaireResult", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_QuestionnaireResult_AspNetUsers_IntervieweeId",
-                        column: x => x.IntervieweeId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_QuestionnaireResult_Questionnaire_QuestionnaireId",
-                        column: x => x.QuestionnaireId,
-                        principalTable: "Questionnaire",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Chat",
+                name: "Chats",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -457,16 +457,16 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Chat", x => x.Id);
+                    table.PrimaryKey("PK_Chats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Chat_Project_ProjectId",
+                        name: "FK_Chats_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "Project",
+                        principalTable: "Projects",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProjectTask",
+                name: "ProjectTasks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -486,34 +486,34 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectTask", x => x.Id);
+                    table.PrimaryKey("PK_ProjectTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectTask_AspNetUsers_AuthorId",
+                        name: "FK_ProjectTasks_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectTask_FacetItem_StatusId",
+                        name: "FK_ProjectTasks_FacetItems_StatusId",
                         column: x => x.StatusId,
-                        principalTable: "FacetItem",
+                        principalTable: "FacetItems",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProjectTask_ProjectTask_ParentTaskId",
+                        name: "FK_ProjectTasks_ProjectTasks_ParentTaskId",
                         column: x => x.ParentTaskId,
-                        principalTable: "ProjectTask",
+                        principalTable: "ProjectTasks",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProjectTask_Project_ProjectId",
+                        name: "FK_ProjectTasks_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "Project",
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answer",
+                name: "Answers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -532,18 +532,18 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answer", x => x.Id);
+                    table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Answer_Question_QuestionId",
+                        name: "FK_Answers_QuestionnaireResults_QuestionnaireResultId",
+                        column: x => x.QuestionnaireResultId,
+                        principalTable: "QuestionnaireResults",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
-                        principalTable: "Question",
+                        principalTable: "Questions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Answer_QuestionnaireResult_QuestionnaireResultId",
-                        column: x => x.QuestionnaireResultId,
-                        principalTable: "QuestionnaireResult",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -563,15 +563,15 @@ namespace Core.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ChatUser_Chat_UserChatsId",
+                        name: "FK_ChatUser_Chats_UserChatsId",
                         column: x => x.UserChatsId,
-                        principalTable: "Chat",
+                        principalTable: "Chats",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -586,22 +586,22 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_AspNetUsers_AuthorId",
+                        name: "FK_Comments_AspNetUsers_AuthorId",
                         column: x => x.AuthorId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comment_ProjectTask_ProjectTaskId",
+                        name: "FK_Comments_ProjectTasks_ProjectTaskId",
                         column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTask",
+                        principalTable: "ProjectTasks",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "Message",
+                name: "Messages",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -617,21 +617,21 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Message", x => x.Id);
+                    table.PrimaryKey("PK_Messages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Message_Chat_ChatId",
+                        name: "FK_Messages_Chats_ChatId",
                         column: x => x.ChatId,
-                        principalTable: "Chat",
+                        principalTable: "Chats",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Message_ProjectTask_ProjectTaskId",
+                        name: "FK_Messages_ProjectTasks_ProjectTaskId",
                         column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTask",
+                        principalTable: "ProjectTasks",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocalFile",
+                name: "LocalFiles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -650,39 +650,39 @@ namespace Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LocalFile", x => x.Id);
+                    table.PrimaryKey("PK_LocalFiles", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LocalFile_AspNetUsers_UploaderId",
+                        name: "FK_LocalFiles_AspNetUsers_UploaderId",
                         column: x => x.UploaderId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LocalFile_Comment_CommentId",
+                        name: "FK_LocalFiles_Comments_CommentId",
                         column: x => x.CommentId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_LocalFile_LocalFileGroup_LocalFileGroupId",
+                        name: "FK_LocalFiles_LocalFileGroups_LocalFileGroupId",
                         column: x => x.LocalFileGroupId,
-                        principalTable: "LocalFileGroup",
+                        principalTable: "LocalFileGroups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_LocalFile_ProjectTask_ProjectTaskId",
+                        name: "FK_LocalFiles_ProjectTasks_ProjectTaskId",
                         column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTask",
+                        principalTable: "ProjectTasks",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answer_QuestionId",
-                table: "Answer",
+                name: "IX_Answers_QuestionId",
+                table: "Answers",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answer_QuestionnaireResultId",
-                table: "Answer",
+                name: "IX_Answers_QuestionnaireResultId",
+                table: "Answers",
                 column: "QuestionnaireResultId");
 
             migrationBuilder.CreateIndex(
@@ -723,8 +723,8 @@ namespace Core.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chat_ProjectId",
-                table: "Chat",
+                name: "IX_Chats_ProjectId",
+                table: "Chats",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
@@ -733,143 +733,143 @@ namespace Core.Migrations
                 column: "UserChatsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_AuthorId",
-                table: "Comment",
+                name: "IX_Comments_AuthorId",
+                table: "Comments",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ProjectTaskId",
-                table: "Comment",
+                name: "IX_Comments_ProjectTaskId",
+                table: "Comments",
                 column: "ProjectTaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FacetItem_FacetId",
-                table: "FacetItem",
+                name: "IX_FacetItems_FacetId",
+                table: "FacetItems",
                 column: "FacetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_KeyWord_SuggestedThemeId",
-                table: "KeyWord",
+                name: "IX_KeyWords_SuggestedThemeId",
+                table: "KeyWords",
                 column: "SuggestedThemeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocalFile_CommentId",
-                table: "LocalFile",
+                name: "IX_LocalFiles_CommentId",
+                table: "LocalFiles",
                 column: "CommentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocalFile_LocalFileGroupId",
-                table: "LocalFile",
+                name: "IX_LocalFiles_LocalFileGroupId",
+                table: "LocalFiles",
                 column: "LocalFileGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocalFile_ProjectTaskId",
-                table: "LocalFile",
+                name: "IX_LocalFiles_ProjectTaskId",
+                table: "LocalFiles",
                 column: "ProjectTaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocalFile_UploaderId",
-                table: "LocalFile",
+                name: "IX_LocalFiles_UploaderId",
+                table: "LocalFiles",
                 column: "UploaderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_ChatId",
-                table: "Message",
+                name: "IX_Messages_ChatId",
+                table: "Messages",
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_ProjectTaskId",
-                table: "Message",
+                name: "IX_Messages_ProjectTaskId",
+                table: "Messages",
                 column: "ProjectTaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_StatusId",
-                table: "Project",
+                name: "IX_Projects_StatusId",
+                table: "Projects",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_StudentId",
-                table: "Project",
+                name: "IX_Projects_StudentId",
+                table: "Projects",
                 column: "StudentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_TeacherId",
-                table: "Project",
+                name: "IX_Projects_TeacherId",
+                table: "Projects",
                 column: "TeacherId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Project_ThemeId",
-                table: "Project",
+                name: "IX_Projects_ThemeId",
+                table: "Projects",
                 column: "ThemeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTask_AuthorId",
-                table: "ProjectTask",
+                name: "IX_ProjectTasks_AuthorId",
+                table: "ProjectTasks",
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTask_ParentTaskId",
-                table: "ProjectTask",
+                name: "IX_ProjectTasks_ParentTaskId",
+                table: "ProjectTasks",
                 column: "ParentTaskId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTask_ProjectId",
-                table: "ProjectTask",
+                name: "IX_ProjectTasks_ProjectId",
+                table: "ProjectTasks",
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTask_StatusId",
-                table: "ProjectTask",
+                name: "IX_ProjectTasks_StatusId",
+                table: "ProjectTasks",
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Question_QuestionnaireId",
-                table: "Question",
-                column: "QuestionnaireId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Question_TypeId",
-                table: "Question",
-                column: "TypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Questionnaire_AuthorId",
-                table: "Questionnaire",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Questionnaire_TypeId",
-                table: "Questionnaire",
-                column: "TypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QuestionnaireResult_IntervieweeId",
-                table: "QuestionnaireResult",
+                name: "IX_QuestionnaireResults_IntervieweeId",
+                table: "QuestionnaireResults",
                 column: "IntervieweeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionnaireResult_QuestionnaireId",
-                table: "QuestionnaireResult",
+                name: "IX_QuestionnaireResults_QuestionnaireId",
+                table: "QuestionnaireResults",
                 column: "QuestionnaireId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SuggestedTheme_UserId",
-                table: "SuggestedTheme",
+                name: "IX_Questionnaires_AuthorId",
+                table: "Questionnaires",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questionnaires_TypeId",
+                table: "Questionnaires",
+                column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_QuestionnaireId",
+                table: "Questions",
+                column: "QuestionnaireId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_TypeId",
+                table: "Questions",
+                column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SuggestedThemes_UserId",
+                table: "SuggestedThemes",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Theme_ApproverId",
-                table: "Theme",
+                name: "IX_Themes_ApproverId",
+                table: "Themes",
                 column: "ApproverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Theme_SelectedThemeId",
-                table: "Theme",
+                name: "IX_Themes_SelectedThemeId",
+                table: "Themes",
                 column: "SelectedThemeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Theme_SelectedThemeToChangeId",
-                table: "Theme",
+                name: "IX_Themes_SelectedThemeToChangeId",
+                table: "Themes",
                 column: "SelectedThemeToChangeId");
         }
 
@@ -877,7 +877,7 @@ namespace Core.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Answer");
+                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -898,52 +898,52 @@ namespace Core.Migrations
                 name: "ChatUser");
 
             migrationBuilder.DropTable(
-                name: "KeyWord");
+                name: "KeyWords");
 
             migrationBuilder.DropTable(
-                name: "LocalFile");
+                name: "LocalFiles");
 
             migrationBuilder.DropTable(
-                name: "Message");
+                name: "Messages");
 
             migrationBuilder.DropTable(
-                name: "Question");
+                name: "QuestionnaireResults");
 
             migrationBuilder.DropTable(
-                name: "QuestionnaireResult");
+                name: "Questions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
-                name: "LocalFileGroup");
+                name: "LocalFileGroups");
 
             migrationBuilder.DropTable(
-                name: "Chat");
+                name: "Chats");
 
             migrationBuilder.DropTable(
-                name: "Questionnaire");
+                name: "Questionnaires");
 
             migrationBuilder.DropTable(
-                name: "ProjectTask");
+                name: "ProjectTasks");
 
             migrationBuilder.DropTable(
-                name: "Project");
+                name: "Projects");
 
             migrationBuilder.DropTable(
-                name: "FacetItem");
+                name: "FacetItems");
 
             migrationBuilder.DropTable(
-                name: "Theme");
+                name: "Themes");
 
             migrationBuilder.DropTable(
-                name: "Facet");
+                name: "Facets");
 
             migrationBuilder.DropTable(
-                name: "SuggestedTheme");
+                name: "SuggestedThemes");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

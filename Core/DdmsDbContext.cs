@@ -1,14 +1,17 @@
 ﻿using Core.Models.Chats;
 using Core.Models.Facets;
 using Core.Models.Files;
+using Core.Models.Identity;
 using Core.Models.Projects;
 using Core.Models.Questionnaires;
 using Core.Models.Themes;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
-public class DdmsDbContext : DbContext
+public class DdmsDbContext : IdentityDbContext<User, IdentityRole<int>, int>
 {
     public DdmsDbContext(DbContextOptions<DdmsDbContext> options) : base(options) { }
 

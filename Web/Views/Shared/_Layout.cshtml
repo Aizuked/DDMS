@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -9,21 +10,76 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Web</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#">СУПД</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
+            <div class="collapse navbar-collapse" id="navbarColor02">
+                <ul class="navbar-nav me-auto">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Чат</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Опросы</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="#">Все опросы</a>
+                                @if (User.IsInRole(ROLES_TEACHER))
+                                {
+                                    <a class="dropdown-item" href="#">Результаты опросов</a>
+                                    <a class="dropdown-item" href="#">Создать опрос</a>
+                                }
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Проекты</a>
+                            <div class="dropdown-menu">
+                                @if (User.IsInRole(ROLES_STUDENT))
+                                {
+                                    <a class="dropdown-item" href="#">Мой проект</a>
+                                    <a class="dropdown-item" href="#">Мои задачи</a>
+                                }
+                                else if (User.IsInRole(ROLES_TEACHER))
+                                {
+                                    <a class="dropdown-item" href="#">Курируемые проекты</a>
+                                    <a class="dropdown-item" href="#">Курируемые задачи</a>
+                                }
+                            </div>
+                        </li>
+                        @if (User.IsInRole(ROLES_ADMIN))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Администрирование</a>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="#">Файлы</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Справочники</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Пользовательские роли</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#">Ключевые слова</a>
+                                </div>
+                            </li>
+                        }
+                    }
+                </ul>
+
+                <ul class="d-flex">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item ms-auto">
+                            <a class="nav-link" href="#">Личный кабинет</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item ms-auto">
+                            <a class="nav-link" href="#">Вход</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>

@@ -13,7 +13,7 @@ using Web.Viewmodels.Identity;
 
 namespace Web.Areas.Identity;
 
-public class UserController(IdentityContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
+public class UserController(DdmsDbContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
     public async Task<IActionResult> List(ListPaginationFilter filter)
     {

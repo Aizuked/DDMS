@@ -7,6 +7,7 @@ using Core.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Web.Miscellaneous;
+using Web.Services.Chat;
 using Web.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,23 +23,14 @@ builder.Services.AddDbContext<DdmsDbContext>(
     }
 );
 
-builder.Services.AddDbContext<IdentityContext>(
-    options =>
-    {
-        options.UseNpgsql(
-            builder.Configuration.GetConnectionString("DefaultConnectionIdentity")
-        );
-    }
-);
-
 builder.Services.AddIdentity<User, IdentityRole<int>>(
     options =>
     {
         options.User.RequireUniqueEmail = true;
         options.Password.RequireNonAlphanumeric = false;
-        options.SignIn.RequireConfirmedEmail = true;
+        options.SignIn.RequireConfirmedEmail = false;
     }
-).AddEntityFrameworkStores<IdentityContext>();
+).AddEntityFrameworkStores<DdmsDbContext>();
 
 builder.Services.AddToastify(
     options =>
@@ -58,10 +50,12 @@ builder.Services.AddAutoMapper(
     {
         options.AddCollectionMappers();
         options.UseEntityFrameworkCoreModel<DdmsDbContext>(builder.Services);
-        options.UseEntityFrameworkCoreModel<IdentityContext>(builder.Services);
         options.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
     }
 );
+
+builder.Services.AddSignalR();
+builder.Services.AddRazorPages();
 
 builder.Services.AddTransient<UserService>();
 
@@ -79,7 +73,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.EnsureMigrationOfContext<DdmsDbContext>();
-app.EnsureMigrationOfContext<IdentityContext>();
 
 app.AssertAutoMapperMappings();
 
@@ -89,5 +82,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Base}/{action=TestString}/{id?}"
 );
+app.MapRazorPages();
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

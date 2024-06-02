@@ -20,25 +20,10 @@ public static class Migrator
         if ((await context.Database.GetPendingMigrationsAsync()).Any())
             await context.Database.MigrateAsync();
 
-        switch (context)
-        {
-            case DdmsDbContext ctx:
-                if (ctx.Facets.Any(i => i.Code == "project_status"))
-                    return;
-
-                await SeedMainContext(ctx);
-                break;
-
-            case IdentityContext ctx:
-                if (ctx.Roles.Any(i => i.Name == ROLES_ADMIN))
-                    return;
-
-                await SeedIdentityRoles(ctx);
-                break;
-        }
+        await SeedContext(context as DdmsDbContext ?? throw new InvalidOperationException());
     }
 
-    private async static Task SeedMainContext(DdmsDbContext context)
+    private async static Task SeedContext(DdmsDbContext context)
     {
         var test =
             await
@@ -50,6 +35,7 @@ public static class Migrator
             return;
 
         await SeedFacets(context);
+        await SeedIdentityRoles(context);
     }
 
     private async static Task SeedFacets(DdmsDbContext context)
@@ -267,7 +253,7 @@ public static class Migrator
         #endregion
     }
 
-    private async static Task SeedIdentityRoles(IdentityContext context)
+    private async static Task SeedIdentityRoles(DdmsDbContext context)
     {
         var test =
             await

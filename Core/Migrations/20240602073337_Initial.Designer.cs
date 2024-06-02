@@ -11,16 +11,16 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace Core.Migrations
 {
-    [DbContext(typeof(IdentityContext))]
-    [Migration("20240530171526_Identity")]
-    partial class Identity
+    [DbContext(typeof(DdmsDbContext))]
+    [Migration("20240602073337_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.4")
+                .HasAnnotation("ProductVersion", "8.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -64,7 +64,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ProjectId");
 
-                    b.ToTable("Chat");
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("Core.Models.Chats.Message", b =>
@@ -105,7 +105,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.Facet", b =>
@@ -142,7 +142,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Facet");
+                    b.ToTable("Facets");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.FacetItem", b =>
@@ -181,7 +181,7 @@ namespace Core.Migrations
 
                     b.HasIndex("FacetId");
 
-                    b.ToTable("FacetItem");
+                    b.ToTable("FacetItems");
                 });
 
             modelBuilder.Entity("Core.Models.Files.LocalFile", b =>
@@ -238,7 +238,7 @@ namespace Core.Migrations
 
                     b.HasIndex("UploaderId");
 
-                    b.ToTable("LocalFile");
+                    b.ToTable("LocalFiles");
                 });
 
             modelBuilder.Entity("Core.Models.Files.LocalFileGroup", b =>
@@ -279,7 +279,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LocalFileGroup");
+                    b.ToTable("LocalFileGroups");
                 });
 
             modelBuilder.Entity("Core.Models.Identity.User", b =>
@@ -411,7 +411,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ProjectTaskId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Core.Models.Projects.Project", b =>
@@ -464,7 +464,7 @@ namespace Core.Migrations
 
                     b.HasIndex("ThemeId");
 
-                    b.ToTable("Project");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Core.Models.Projects.ProjectTask", b =>
@@ -522,7 +522,7 @@ namespace Core.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("ProjectTask");
+                    b.ToTable("ProjectTasks");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Answer", b =>
@@ -573,7 +573,7 @@ namespace Core.Migrations
 
                     b.HasIndex("QuestionnaireResultId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Question", b =>
@@ -611,7 +611,7 @@ namespace Core.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Question");
+                    b.ToTable("Questions");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.Questionnaire", b =>
@@ -650,7 +650,7 @@ namespace Core.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Questionnaire");
+                    b.ToTable("Questionnaires");
                 });
 
             modelBuilder.Entity("Core.Models.Questionnaires.QuestionnaireResult", b =>
@@ -682,7 +682,7 @@ namespace Core.Migrations
 
                     b.HasIndex("QuestionnaireId");
 
-                    b.ToTable("QuestionnaireResult");
+                    b.ToTable("QuestionnaireResults");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.KeyWord", b =>
@@ -719,7 +719,7 @@ namespace Core.Migrations
 
                     b.HasIndex("SuggestedThemeId");
 
-                    b.ToTable("KeyWord");
+                    b.ToTable("KeyWords");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.SuggestedTheme", b =>
@@ -741,7 +741,7 @@ namespace Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SuggestedTheme");
+                    b.ToTable("SuggestedThemes");
                 });
 
             modelBuilder.Entity("Core.Models.Themes.Theme", b =>
@@ -781,7 +781,7 @@ namespace Core.Migrations
 
                     b.HasIndex("SelectedThemeToChangeId");
 
-                    b.ToTable("Theme");
+                    b.ToTable("Themes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
