@@ -20,10 +20,10 @@ public static class Migrator
         if ((await context.Database.GetPendingMigrationsAsync()).Any())
             await context.Database.MigrateAsync();
 
-        await SeedContext(context as DdmsDbContext ?? throw new InvalidOperationException());
+        await SeedContext(context as DdmsDbContext ?? throw new InvalidOperationException(), scope);
     }
 
-    private async static Task SeedContext(DdmsDbContext context)
+    private async static Task SeedContext(DdmsDbContext context, IServiceScope scope)
     {
         var test =
             await
@@ -35,7 +35,7 @@ public static class Migrator
             return;
 
         await SeedFacets(context);
-        await SeedIdentityRoles(context);
+        await SeedIdentityRoles(context, scope);
     }
 
     private async static Task SeedFacets(DdmsDbContext context)
@@ -253,7 +253,7 @@ public static class Migrator
         #endregion
     }
 
-    private async static Task SeedIdentityRoles(DdmsDbContext context)
+    private async static Task SeedIdentityRoles(DdmsDbContext context, IServiceScope scope)
     {
         var test =
             await
@@ -263,6 +263,10 @@ public static class Migrator
 
         if (test)
             return;
+
+        using var _userManager = scope.ServiceProvider.GetService<UserManager<User>>();
+        using var _userStore = scope.ServiceProvider.GetService<IUserStore<User>>();
+        using var _emailStore = scope.ServiceProvider.GetService<IUserEmailStore<User>>();
 
         var userRoles = new List<IdentityRole<int>>
         {
@@ -289,17 +293,15 @@ public static class Migrator
             userRoles
                 .ToImmutableDictionary(k => k.Name!, v => v.Id);
 
-        var passwordHash = new PasswordHasher<object>().HashPassword(null!, "zxczxc");
 
         var users = new List<User>
         {
             new()
             {
-                UserName           = "admin",
-                NormalizedUserName = "admin",
+                UserName           = "abc@qwe.ru",
+                NormalizedUserName = "abc@qwe.ru",
                 Email              = "abc@qwe.ru",
                 NormalizedEmail    = "abc@qwe.ru",
-                PasswordHash       = passwordHash,
                 SecurityStamp      = Guid.NewGuid().ToString(),
                 FirstName          = "Админ",
                 MiddleName         = "Админович",
@@ -307,11 +309,10 @@ public static class Migrator
             },
             new()
             {
-                UserName           = "teacher",
-                NormalizedUserName = "teacher",
+                UserName           = "qwe@abc.ru",
+                NormalizedUserName = "qwe@abc.ru",
                 Email              = "qwe@abc.ru",
                 NormalizedEmail    = "qwe@abc.ru",
-                PasswordHash       = passwordHash,
                 SecurityStamp      = Guid.NewGuid().ToString(),
                 FirstName          = "Преподаватель",
                 MiddleName         = "Преподавателевич",
@@ -320,11 +321,10 @@ public static class Migrator
             },
             new()
             {
-                UserName           = "student",
-                NormalizedUserName = "student",
+                UserName           = "zxc@qwe.ru",
+                NormalizedUserName = "zxc@qwe.ru",
                 Email              = "zxc@qwe.ru",
                 NormalizedEmail    = "zxc@qwe.ru",
-                PasswordHash       = passwordHash,
                 SecurityStamp      = Guid.NewGuid().ToString(),
                 FirstName          = "Студент",
                 MiddleName         = "Студентович",
@@ -332,8 +332,13 @@ public static class Migrator
             },
         };
 
-        context.AddRange(users);
-        await context.SaveChangesAsync();
+        users.ForEach(
+            i =>
+            {
+                _userStore!.SetUserNameAsync(i, i.Email, CancellationToken.None).ConfigureAwait(false);
+                _userManager!.CreateAsync(i, "zxcZXC123").ConfigureAwait(false);
+            }
+        );
 
         var userIds =
             users
@@ -343,17 +348,17 @@ public static class Migrator
         {
             new()
             {
-                UserId = userIds["admin"],
+                UserId = userIds["abc@qwe.ru"],
                 RoleId = userRoleIds[ROLES_ADMIN],
             },
             new()
             {
-                UserId = userIds["teacher"],
+                UserId = userIds["qwe@abc.ru"],
                 RoleId = userRoleIds[ROLES_TEACHER],
             },
             new()
             {
-                UserId = userIds["student"],
+                UserId = userIds["zxc@qwe.ru"],
                 RoleId = userRoleIds[ROLES_STUDENT],
             },
         };

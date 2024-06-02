@@ -29,10 +29,15 @@ public class MessageConfiguration : IEntityTypeConfiguration<Message>
         builder.Property(p => p.IsDeleted)
                .IsRequired();
 
-        builder.HasOne<LocalFile>()
-               .WithOne();
+        builder.HasOne(p => p.LocalFile)
+               .WithOne()
+               .HasForeignKey<Message>(p => p.LocalFileId);
 
         builder.HasOne(p => p.ProjectTask)
                .WithMany();
+
+        builder.HasOne(p => p.Sender)
+               .WithMany()
+               .HasForeignKey(p => p.SenderId);
     }
 }

@@ -23,6 +23,9 @@ public partial class MessageEditDtoProfile : Profile
             .ForMember(i => i.TimeStamp, opt => opt.Ignore())
             .ForMember(i => i.IsEdited, opt => opt.Ignore())
             .ForMember(i => i.IsReceived, opt => opt.Ignore())
-            .ForMember(i => i.ProjectTask, opt => opt.Ignore());
+            .ForMember(i => i.ProjectTask, opt => opt.Ignore())
+            .ForMember(i => i.LocalFile, opt => opt.Ignore())
+            .ForMember(i => i.SenderId, opt => opt.Ignore())
+            .ForMember(i => i.Sender, opt => opt.Ignore());
     }
 }

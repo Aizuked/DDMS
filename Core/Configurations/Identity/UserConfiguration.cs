@@ -1,7 +1,6 @@
 ﻿using Core.Models.Chats;
 using Core.Models.Identity;
 using Core.Models.Projects;
-using Core.Models.Questionnaires;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

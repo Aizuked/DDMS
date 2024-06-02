@@ -1,4 +1,6 @@
-﻿using Core.Models.Projects;
+﻿using Core.Models.Files;
+using Core.Models.Identity;
+using Core.Models.Projects;
 
 namespace Core.Models.Chats;
 
@@ -18,7 +20,13 @@ public class Message
 
     public int? LocalFileId { get; set; }
 
+    public virtual LocalFile? LocalFile { get; set; }
+
     public int? ProjectTaskId { get; set; }
 
     public virtual ProjectTask? ProjectTask { get; set; }
+
+    public int SenderId { get; set; }
+
+    public virtual User Sender { get; set; } = null!;
 }

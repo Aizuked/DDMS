@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Core.Migrations
 {
     [DbContext(typeof(DdmsDbContext))]
-    [Migration("20240602073337_Initial")]
+    [Migration("20240602161934_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -96,6 +96,9 @@ namespace Core.Migrations
                     b.Property<int?>("ProjectTaskId")
                         .HasColumnType("integer");
 
+                    b.Property<int>("SenderId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("TimeStamp")
                         .HasColumnType("timestamp with time zone");
 
@@ -103,7 +106,11 @@ namespace Core.Migrations
 
                     b.HasIndex("ChatId");
 
+                    b.HasIndex("LocalFileId");
+
                     b.HasIndex("ProjectTaskId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
@@ -946,11 +953,25 @@ namespace Core.Migrations
                         .WithMany("Messages")
                         .HasForeignKey("ChatId");
 
+                    b.HasOne("Core.Models.Files.LocalFile", "LocalFile")
+                        .WithMany()
+                        .HasForeignKey("LocalFileId");
+
                     b.HasOne("Core.Models.Projects.ProjectTask", "ProjectTask")
                         .WithMany()
                         .HasForeignKey("ProjectTaskId");
 
+                    b.HasOne("Core.Models.Identity.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LocalFile");
+
                     b.Navigation("ProjectTask");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Core.Models.Facets.FacetItem", b =>

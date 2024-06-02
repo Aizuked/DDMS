@@ -72,7 +72,6 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.EnsureMigrationOfContext<DdmsDbContext>();
 
 app.AssertAutoMapperMappings();
 
@@ -83,6 +82,8 @@ app.MapControllerRoute(
     pattern: "{controller=Base}/{action=TestString}/{id?}"
 );
 app.MapRazorPages();
-app.MapHub<ChatHub>("/chatHub");
+app.MapHub<ChatHub>("/chat");
+
+app.EnsureMigrationOfContext<DdmsDbContext>();
 
 app.Run();

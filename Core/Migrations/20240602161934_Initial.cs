@@ -601,36 +601,6 @@ namespace Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Content = table.Column<string>(type: "text", nullable: true),
-                    TimeStamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsEdited = table.Column<bool>(type: "boolean", nullable: false),
-                    IsReceived = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    LocalFileId = table.Column<int>(type: "integer", nullable: true),
-                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
-                    ChatId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Chats_ChatId",
-                        column: x => x.ChatId,
-                        principalTable: "Chats",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Messages_ProjectTasks_ProjectTaskId",
-                        column: x => x.ProjectTaskId,
-                        principalTable: "ProjectTasks",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "LocalFiles",
                 columns: table => new
                 {
@@ -670,6 +640,48 @@ namespace Core.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_LocalFiles_ProjectTasks_ProjectTaskId",
+                        column: x => x.ProjectTaskId,
+                        principalTable: "ProjectTasks",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Content = table.Column<string>(type: "text", nullable: true),
+                    TimeStamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsEdited = table.Column<bool>(type: "boolean", nullable: false),
+                    IsReceived = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    LocalFileId = table.Column<int>(type: "integer", nullable: true),
+                    ProjectTaskId = table.Column<int>(type: "integer", nullable: true),
+                    SenderId = table.Column<int>(type: "integer", nullable: false),
+                    ChatId = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_AspNetUsers_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Messages_LocalFiles_LocalFileId",
+                        column: x => x.LocalFileId,
+                        principalTable: "LocalFiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Messages_ProjectTasks_ProjectTaskId",
                         column: x => x.ProjectTaskId,
                         principalTable: "ProjectTasks",
                         principalColumn: "Id");
@@ -778,9 +790,19 @@ namespace Core.Migrations
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Messages_LocalFileId",
+                table: "Messages",
+                column: "LocalFileId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_ProjectTaskId",
                 table: "Messages",
                 column: "ProjectTaskId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_SenderId",
+                table: "Messages",
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Projects_StatusId",
@@ -901,9 +923,6 @@ namespace Core.Migrations
                 name: "KeyWords");
 
             migrationBuilder.DropTable(
-                name: "LocalFiles");
-
-            migrationBuilder.DropTable(
                 name: "Messages");
 
             migrationBuilder.DropTable(
@@ -916,16 +935,19 @@ namespace Core.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Chats");
+
+            migrationBuilder.DropTable(
+                name: "LocalFiles");
+
+            migrationBuilder.DropTable(
+                name: "Questionnaires");
+
+            migrationBuilder.DropTable(
                 name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "LocalFileGroups");
-
-            migrationBuilder.DropTable(
-                name: "Chats");
-
-            migrationBuilder.DropTable(
-                name: "Questionnaires");
 
             migrationBuilder.DropTable(
                 name: "ProjectTasks");
