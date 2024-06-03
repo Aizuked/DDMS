@@ -7,6 +7,7 @@ using Core.Exceptions;
 using Core.Models.Files;
 using Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.MSIdentity.Shared;
 using Microsoft.EntityFrameworkCore;
 using MimeMapping;
 using Web.Miscellaneous.Extensions;
@@ -48,7 +49,7 @@ public class LocalFileController(DdmsDbContext context, UserService userService,
     }
 
     [HttpPost]
-    public async Task Add(int fileGroupId, IFormFileCollection fileCollection)
+    public async Task<JsonResult> Add(int fileGroupId, IFormFileCollection fileCollection)
     {
         var user =
             await
@@ -111,6 +112,14 @@ public class LocalFileController(DdmsDbContext context, UserService userService,
             throw new NotifiableException($"{fileCollection.Count - localFiles.Count}.");
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return Json(new
+            {
+                Id = localFiles
+                    .Select(i => i.Id)
+                    .FirstOrDefault()
+            }
+        );
     }
 
     [HttpPost]

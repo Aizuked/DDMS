@@ -1,0 +1,49 @@
+﻿@model Web.Viewmodels.Files.LocalFileViewModel
+
+<div class="modal" id="js-file-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Загрузка файла</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Выберите подходящий файл@(Model.AllowedMimeTypes.Any() ? " (" + string.Join(", ", Model.AllowedMimeTypes) + ')' : "").</p>
+            </div>
+            <form method="post" enctype="multipart/form-data" asp-controller="LocalFile" asp-action="Add" id="js-file-form">
+                <input type="file" id="js-file-input" />
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Загрузить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('js-file-form').on('click', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('/LocalFile/Add', {
+            method: 'POST',
+            body: formData,
+            cache: false,
+            contentType: false,
+            processData: false
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.Id);
+            $('#js-file-id').val(data.Id);
+            $('#js-file-modal').hide();
+        })
+        .catch(error => {
+            console.error('Error uploading file ', error);
+        });
+    });
+</script>

@@ -111,7 +111,7 @@
                                             <div>
                                                 @if(!string.IsNullOrEmpty(msg.Content))
                                                 {
-                                                    <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: #5c636a;">
+                                                    <p class="small p-2 ms-3 mb-1 rounded-3" style="background-color: @(senderColor);">
                                                         @(msg.Content)
                                                     </p>
                                                 }
@@ -129,7 +129,7 @@
                             </div>
 
                             <div class="text-muted d-flex justify-content-start align-items-end pe-3 pt-3 mt-2">
-                                <input type="text" class="form-control form-control-lg" id="exampleFormControlInput2"
+                                <input type="text" class="form-control form-control-lg" id="js-content-input"
                                        placeholder="Введите сообщение">
                                 <a class="ms-1 text-muted" id="js-file-upload">
                                     <i class="fas fa-paperclip"></i>
@@ -137,6 +137,7 @@
                                 <a class="ms-3 text-muted" id="js-send-msg">
                                     <i class="fas fa-paper-plane"></i>
                                 </a>
+                                <div hidden="hidden" id="js-file-id" asp></div>
                             </div>
 
                         </div>
@@ -153,6 +154,45 @@
 @section Scripts
 {
     <script>
-        
+        $('#js-send-msg').on('click', (e) => {
+            e.preventDefault();
+
+            fetch('/LocalFile/Add', {
+                method: 'POST',
+                body: formData,
+                cache: false,
+                contentType: false,
+                processData: false
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.Id);
+                $('#js-file-id').val(data.Id);
+                $('#js-file-modal').hide();
+            })
+            .catch(error => {
+                console.error('Error uploading file ', error);
+            });
+
+            connection.invoke(
+                "SendMessage",
+                @(Model.MessageListDtos.Select(i => i.ChatId).FirstOrDefault()),
+                $('#js-content-input').val()
+            ).catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
+
+        $('#js-file-upload').on('click', (e) => {
+            e.preventDefault();
+
+            connection.invoke(
+                "SendMessage",
+                @(Model.MessageListDtos.Select(i => i.ChatId).FirstOrDefault()),
+                $('#js-content-input').val()
+            ).catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
     </script>
 }
