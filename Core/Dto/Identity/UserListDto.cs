@@ -28,6 +28,6 @@ public partial class UserListDtoProfile : Profile
     {
         CreateMap<User, UserListDto>()
             .ForMember(dto => dto.ProfilePicturePath, opt => opt.MapFrom(u => u.LocalFiles.Where(i => i.Id == u.ProfilePictureId).Select(i => i.PhysicalPath)))
-            .ForMember(dto => dto.FullName, opt => opt.MapFrom(entity => entity.LastName + entity.MiddleName?[..1] + '.' + entity.FirstName[..1] + '.'));
+            .ForMember(dto => dto.FullName, opt => opt.MapFrom(entity => entity.LastName + entity.MiddleName + ' ' + entity.FirstName + ' '));
     }
 }

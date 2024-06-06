@@ -15,7 +15,7 @@ namespace Web.Areas.Chat;
 
 public class ChatController(DdmsDbContext context, UserService userService, IMapper mapper, IToastifyService toastify) : Controller
 {
-    public async Task<IActionResult> List(ListPaginationFilter filter, ListPaginationFilter msgFilter, int? chatId)
+    public async Task<IActionResult> List(ListPaginationFilter filter, int page, int? chatId)
     {
         var chatQuery =
             context
@@ -55,7 +55,8 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
                         .Where(i => i.Id == chatId)
                         .Select(i => i.Messages)
                         .ProjectTo<MessageListDto>(mapper.ConfigurationProvider)
-                        .Paginate(msgFilter)
+                        .Skip(filter.PageSize * page)
+                        .Take(filter.PageSize)
                         .ToListAsync(),
             SelfId = userId
         };

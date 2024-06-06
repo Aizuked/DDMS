@@ -93,7 +93,7 @@
                                 @if (Model.ChatListDtos.Any())
                                 {
                                     <a asp-action="List" asp-route-chatId="@(Model.MessageListDtos.Select(i => i.ChatId).First())"
-                                       asp-route-msgFilter="@(Model.)"></a>
+                                       asp-route-msgFilter="@(Model.CurrentPage++)"></a>
                                     foreach (var msg in Model.MessageListDtos)
                                     {
                                         var justifyDirection =
@@ -131,6 +131,7 @@
                             <div class="text-muted d-flex justify-content-start align-items-end pe-3 pt-3 mt-2">
                                 <input type="text" class="form-control form-control-lg" id="js-content-input"
                                        placeholder="Введите сообщение">
+                                <input hidden="hidden" id="js-msg-id"/>
                                 <a class="ms-1 text-muted" id="js-file-upload">
                                     <i class="fas fa-paperclip"></i>
                                 </a>
@@ -177,7 +178,7 @@
             connection.invoke(
                 "SendMessage",
                 @(Model.MessageListDtos.Select(i => i.ChatId).FirstOrDefault()),
-                $('#js-content-input').val()
+                `${$('#js-msg-id').val()}`
             ).catch(function (err) {
                 return console.error(err.toString());
             });
@@ -189,7 +190,7 @@
             connection.invoke(
                 "SendMessage",
                 @(Model.MessageListDtos.Select(i => i.ChatId).FirstOrDefault()),
-                $('#js-content-input').val()
+                null
             ).catch(function (err) {
                 return console.error(err.toString());
             });
