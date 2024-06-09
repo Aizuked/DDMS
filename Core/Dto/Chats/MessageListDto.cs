@@ -34,6 +34,12 @@ public class MessageListDto
     public string? SenderDetailsPath { get; set; }
 
     public string? SenderProfilePicturePath { get; set; }
+
+    public MessageListDto SetProfilePicturePath(string path)
+    {
+        this.SenderProfilePicturePath = path;
+        return this;
+    }
 }
 
 public partial class MessageListDtoProfile : Profile

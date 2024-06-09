@@ -1,0 +1,40 @@
+﻿@model Web.Viewmodels.Files.LocalFileGroupListViewModel
+
+@{
+ViewData["Title"] = "Список групп файлов";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Список групп файлов</h1>
+    <a asp-action="Create" asp-controller="LocalFileGroup" class="btn btn-primary mb-3">Создать новую группу файлов</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Код</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Макс. размер</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var group in Model.LocalFileGroupListDtos)
+        {
+        <tr>
+            <td>@group.Id</td>
+            <td>@group.Code</td>
+            <td>@group.DisplayName</td>
+            <td>@group.Description</td>
+            <td>@group.MaxSize</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@group.Id" class="btn btn-warning">Редактировать</a>
+                <form asp-action="Delete" asp-route-id="@group.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>

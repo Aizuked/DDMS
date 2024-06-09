@@ -27,7 +27,7 @@ public partial class UserListDtoProfile : Profile
     public UserListDtoProfile()
     {
         CreateMap<User, UserListDto>()
-            .ForMember(dto => dto.ProfilePicturePath, opt => opt.MapFrom(u => u.LocalFiles.Where(i => i.Id == u.ProfilePictureId).Select(i => i.PhysicalPath)))
+            .ForMember(dto => dto.ProfilePicturePath, opt => opt.Ignore())
             .ForMember(dto => dto.FullName, opt => opt.MapFrom(entity => entity.LastName + entity.MiddleName + ' ' + entity.FirstName + ' '));
     }
 }

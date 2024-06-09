@@ -1,0 +1,22 @@
+﻿@model Web.Viewmodels.Projects.CommentEditViewModel
+
+@{
+ViewData["Title"] = "Редактировать комментарий";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Редактировать комментарий</h1>
+    <form method="post" asp-action="Edit">
+        <input type="hidden" name="Id" value="@Model.CommentEditDto.Id">
+        <div class="mb-3">
+            <label for="Text" class="form-label">Текст</label>
+            <textarea class="form-control" id="Text" name="Text" rows="3">@Model.CommentEditDto.Text</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="IsPrivate" class="form-label">Приватный</label>
+            <input type="checkbox" class="form-check-input" id="IsPrivate" name="IsPrivate" @(Model.CommentEditDto.IsPrivate ? "checked" : "")>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-action="List" asp-controller="Project" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>

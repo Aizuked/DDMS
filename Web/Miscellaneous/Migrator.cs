@@ -335,11 +335,13 @@ public static class Migrator
         users.ForEach(
             i =>
             {
+                Thread.Sleep(1000);
                 _userStore!.SetUserNameAsync(i, i.Email, CancellationToken.None).ConfigureAwait(false);
                 _userManager!.CreateAsync(i, "zxcZXC123").ConfigureAwait(false);
             }
         );
 
+        Thread.Sleep(5000);
         var userIds =
             users
                 .ToImmutableDictionary(k => k.UserName!, v => v.Id);

@@ -7,6 +7,8 @@ public class ProjectTaskListDto : BaseEntityDto
 {
     public string DisplayName { get; set; } = string.Empty;
 
+    public string? Description { get; set; }
+
     public int Readiness { get; set; }
 
     public DateTime? DateTimeStart { get; set; }

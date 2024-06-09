@@ -1,0 +1,40 @@
+﻿@model Web.Viewmodels.Files.LocalFileListViewModel
+
+@{
+ViewData["Title"] = "Список файлов";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Список файлов</h1>
+    <a asp-action="Create" asp-controller="LocalFile" class="btn btn-primary mb-3">Добавить новый файл</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Тип</th>
+            <th>Размер</th>
+            <th>Группа файлов</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var file in Model.LocalFileListDtos)
+        {
+        <tr>
+            <td>@file.Id</td>
+            <td>@file.DisplayName</td>
+            <td>@file.MimeType</td>
+            <td>@file.Size</td>
+            <td>@file.LocalFileGroup.DisplayName</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@file.Id" class="btn btn-warning">Редактировать</a>
+                <form asp-action="Delete" asp-route-id="@file.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>

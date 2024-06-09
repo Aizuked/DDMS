@@ -50,6 +50,7 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
             PageSize = filter.PageSize,
             ChatListDtos = chatListDtos,
             MessageListDtos =
+                (
                 await
                     chatQuery
                         .Where(i => i.Id == chatId)
@@ -57,7 +58,9 @@ public class ChatController(DdmsDbContext context, UserService userService, IMap
                         .ProjectTo<MessageListDto>(mapper.ConfigurationProvider)
                         .Skip(filter.PageSize * page)
                         .Take(filter.PageSize)
-                        .ToListAsync(),
+                        .ToListAsync()
+                ).Join(context.Users, i => i.SenderId, i => i.Id, (dto, user) => dto.SetProfilePicturePath(user.LocalFiles.Where(j => j.Id == user.ProfilePictureId).Select(i => i.PhysicalPath).FirstOrDefault()))
+                .ToList(),
             SelfId = userId
         };
 

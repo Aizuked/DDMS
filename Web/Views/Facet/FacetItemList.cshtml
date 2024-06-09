@@ -1,0 +1,37 @@
+﻿@model Web.Viewmodels.Facets.FacetItemListViewModel
+
+@{
+ViewData["Title"] = "Список элементов справочника";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Список элементов справочника</h1>
+    <a href="/FacetItem/Create" class="btn btn-primary mb-3">Создать новый элемент</a>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Код</th>
+            <th>Название</th>
+            <th>Описание</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.FacetItemListDtos)
+        {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.Code</td>
+            <td>@item.DisplayName</td>
+            <td>@item.Description</td>
+            <td>
+                <a href="/FacetItem/Details/@item.Id" class="btn btn-info">Просмотр</a>
+                <a href="/FacetItem/Edit/@item.Id" class="btn btn-warning">Редактировать</a>
+                <a href="/FacetItem/Delete/@item.Id" class="btn btn-danger">Удалить</a>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+</div>
