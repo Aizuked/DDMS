@@ -21,6 +21,7 @@ public partial class QuestionEditDtoProfile : Profile
             .ForMember(i => i.Type, opt => opt.Ignore())
             .ForMember(i => i.IsDeleted, opt => opt.Ignore())
             .ForMember(i => i.Created, opt => opt.Ignore())
-            .ForMember(i => i.Updated, opt => opt.Ignore());
+            .ForMember(i => i.Updated, opt => opt.Ignore())
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

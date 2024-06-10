@@ -1,0 +1,29 @@
+﻿@model Web.Viewmodels.Facets.FacetItemEditViewModel
+
+@{
+ViewData["Title"] = "Редактировать элемент справочника";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Редактировать элемент справочника</h1>
+    <form method="post" asp-action="Edit">
+        @Html.HiddenFor(model => model.FacetItemEditDto.Id)
+        <div class="mb-3">
+            <label asp-for="FacetItemEditDto.Code" class="form-label"></label>
+            <input asp-for="FacetItemEditDto.Code" class="form-control" />
+            <span asp-validation-for="FacetItemEditDto.Code" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FacetItemEditDto.DisplayName" class="form-label"></label>
+            <input asp-for="FacetItemEditDto.DisplayName" class="form-control" />
+            <span asp-validation-for="FacetItemEditDto.DisplayName" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="FacetItemEditDto.Description" class="form-label"></label>
+            <textarea asp-for="FacetItemEditDto.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="FacetItemEditDto.Description" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-action="List" asp-controller="FacetItem" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>

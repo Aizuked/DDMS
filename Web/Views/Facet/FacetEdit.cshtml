@@ -7,20 +7,23 @@
 <div class="container mt-5">
     <h1 class="mb-4">Редактировать справочник</h1>
     <form method="post" asp-action="Edit">
-        <input type="hidden" name="Id" value="@Model.FacetEditDto.Id">
+        @Html.HiddenFor(model => model.FacetEditDto.Id)
         <div class="mb-3">
-            <label for="Code" class="form-label">Код</label>
-            <input type="text" class="form-control" id="Code" name="Code" value="@Model.FacetEditDto.Code">
+            <label asp-for="FacetEditDto.Code" class="form-label"></label>
+            <input asp-for="FacetEditDto.Code" class="form-control" />
+            <span asp-validation-for="FacetEditDto.Code" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label for="DisplayName" class="form-label">Название</label>
-            <input type="text" class="form-control" id="DisplayName" name="DisplayName" value="@Model.FacetEditDto.DisplayName">
+            <label asp-for="FacetEditDto.DisplayName" class="form-label"></label>
+            <input asp-for="FacetEditDto.DisplayName" class="form-control" />
+            <span asp-validation-for="FacetEditDto.DisplayName" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label for="Description" class="form-label">Описание</label>
-            <textarea class="form-control" id="Description" name="Description" rows="3">@Model.FacetEditDto.Description</textarea>
+            <label asp-for="FacetEditDto.Description" class="form-label"></label>
+            <textarea asp-for="FacetEditDto.Description" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="FacetEditDto.Description" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a href="/Facet/List" class="btn btn-secondary">Отмена</a>
+        <a asp-action="List" class="btn btn-secondary">Отмена</a>
     </form>
 </div>

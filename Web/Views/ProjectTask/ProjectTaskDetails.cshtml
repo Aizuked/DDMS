@@ -1,0 +1,49 @@
+﻿@model Web.Viewmodels.Projects.ProjectTaskDetailsViewModel
+
+@{
+    ViewData["Title"] = "Детали задачи проекта";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Детали задачи проекта</h1>
+
+    <dl class="row">
+        <dt class="col-sm-2">Название</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.DisplayName</dd>
+
+        <dt class="col-sm-2">Описание</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.Description</dd>
+
+        <dt class="col-sm-2">Готовность</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.Readiness %</dd>
+
+        <dt class="col-sm-2">Дата начала</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.DateTimeStart?.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-2">Дата окончания</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.DateTimeEnd?.ToString("dd.MM.yyyy")</dd>
+
+        <dt class="col-sm-2">Проект</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.Project.DisplayName</dd>
+
+        <dt class="col-sm-2">Автор</dt>
+        <dd class="col-sm-10">@Model.ProjectTaskDetailsDto.Author.FullName</dd>
+
+        <dt class="col-sm-2">Комментарии</dt>
+        <dd class="col-sm-10">
+            <ul>
+                @foreach (var comment in Model.ProjectTaskDetailsDto.Comments)
+                {
+                    <li>@comment.Text</li>
+                }
+            </ul>
+        </dd>
+    </dl>
+    @if (Model.CanEdit)
+    {
+        <a asp-action="Edit" asp-route-id="@Model.ProjectTaskDetailsDto.Id" class="btn btn-warning">Редактировать</a>
+        <form asp-action="Delete" asp-route-id="@Model.ProjectTaskDetailsDto.Id" method="post" class="d-inline">
+            <button type="submit" class="btn btn-danger">Удалить</button>
+        </form>
+    }
+</div>

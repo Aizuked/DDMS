@@ -12,7 +12,11 @@ using Web.Services.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(opts =>
+    {
+        opts.AllowEmptyInputInBodyModelBinding = true;
+    }
+);
 
 builder.Services.AddDbContext<DdmsDbContext>(
     options =>
@@ -79,8 +83,11 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Base}/{action=TestString}/{id?}"
+    pattern: "{controller=Base}/{action=Index}/{id?}"
 );
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Base}/{action=Index}/{id?}");
 app.MapRazorPages();
 app.MapHub<ChatHub>("/chat");
 

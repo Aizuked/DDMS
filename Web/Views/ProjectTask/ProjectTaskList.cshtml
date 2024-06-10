@@ -1,0 +1,61 @@
+﻿@model Web.Viewmodels.Projects.ProjectTaskListViewModel
+
+@{
+ViewData["Title"] = "Список задач проекта";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Список задач проекта</h1>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Готовность</th>
+            <th>Дата начала</th>
+            <th>Дата окончания</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var task in Model.ProjectTaskListDtos)
+        {
+        <tr>
+            <td>@task.DisplayName</td>
+            <td>@task.Readiness %</td>
+            <td>@task.DateTimeStart?.ToString("dd.MM.yyyy")</td>
+            <td>@task.DateTimeEnd?.ToString("dd.MM.yyyy")</td>
+            <td>@task.StatusDisplayName</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@task.Id" class="btn btn-primary">Детали</a>
+                <a asp-action="Edit" asp-route-id="@task.Id" class="btn btn-warning">Редактировать</a>
+                <form asp-action="Delete" asp-route-id="@task.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Удалить</button>
+                </form>
+            </td>
+        </tr>
+        }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between">
+        <a asp-action="Edit" asp-route-projectId="@Model.ProjectTaskListDtos.FirstOrDefault()?.Project.Id" class="btn btn-success">Добавить задачу</a>
+        <nav>
+            <ul class="pagination">
+                <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-route-projectId="@Model.ProjectTaskListDtos.FirstOrDefault().Project.Id" asp-action="List" asp-route-page="@(Model.CurrentPage - 1)">Предыдущая</a>
+                </li>
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                    <a class="page-link" asp-route-projectId="@Model.ProjectTaskListDtos.FirstOrDefault().Project.Id" asp-action="List" asp-route-page="@i">@i</a>
+                </li>
+                }
+                <li class="page-item @(Model.CurrentPage == Model.PageCount ? "disabled" : "")">
+                    <a class="page-link" asp-route-projectId="@Model.ProjectTaskListDtos.FirstOrDefault().Project.Id" asp-action="List" asp-route-page="@(Model.CurrentPage + 1)">Следующая</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

@@ -4,6 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Core;
 using Core.Dto.Projects;
 using Core.Exceptions;
+using Core.Models.Projects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Miscellaneous.Extensions;
@@ -38,7 +39,7 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
             ProjectTaskListDtos = projectTaskListDtos
         };
 
-        return View(viewModel);
+        return View("ProjectTaskList", viewModel);
     }
 
     public async Task<IActionResult> Details(int id)
@@ -55,8 +56,8 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
         if (
-            projectTask.Project.Student.Id != userId ||
-            projectTask.Project.Teacher.Id != userId ||
+            projectTask.Project.Student.Id != userId &&
+            projectTask.Project.Teacher.Id != userId &&
             !User.IsInRole(ROLES_ADMIN)
         )
             projectTask.Comments =
@@ -70,31 +71,38 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         {
             CanEdit =
                 User.IsInRole(ROLES_ADMIN) ||
-                projectTask.Project.Teacher.Id == userId ||
+                projectTask.Project.Teacher.Id == userId &&
                 projectTask.Project.Student.Id == userId,
             ProjectTaskDetailsDto = projectTask
         };
 
-        return View(viewModel);
+        return View("ProjectTaskDetails", viewModel);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int? id, int? projectId)
     {
-        var projectTask =
-            await
-                context
-                    .ProjectTasks
-                    .Where(i => i.Id == id)
-                    .ProjectTo<ProjectTaskEditDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанную задачу.");
+        ProjectTaskEditDto projectTask = new()
+        {
+            Project = new ProjectListDto(){Id = (int)projectId}
+        };
+
+        if (id.HasValue)
+            projectTask =
+                await
+                    context
+                        .ProjectTasks
+                        .Where(i => i.Id == id)
+                        .ProjectTo<ProjectTaskEditDto>(mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанную задачу.");
 
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
         if (
-            projectTask.ProjectListDto.Student.Id != userId ||
-            projectTask.ProjectListDto.Teacher.Id != userId ||
-            !User.IsInRole(ROLES_ADMIN)
+            projectTask.Project?.Student.Id != userId &&
+            projectTask.Project?.Teacher.Id != userId &&
+            !User.IsInRole(ROLES_ADMIN) &&
+            projectTask.Id != default
         )
             throw new NoRightsException();
 
@@ -103,26 +111,36 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
             ProjectTaskEditDto = projectTask
         };
 
-        return View(viewModel);
+        return View("ProjectTaskEdit", viewModel);
     }
 
     [HttpPost]
-    public async Task Edit(ProjectTaskEditDto dto)
+    public async Task<RedirectToActionResult> Edit(ProjectTaskEditViewModel vm, int? projectId)
     {
-        var projectTask =
-            await
-                context
-                    .ProjectTasks
-                    .Include(projectTask => projectTask.Project)
-                    .Where(i => i.Id == dto.Id)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанную задачу.");
-
+        var dto = vm.ProjectTaskEditDto;
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
+        ProjectTask projectTask = new ProjectTask()
+        {
+            ProjectId = (int)projectId,
+            Project = (await context.Projects.Where(i => i.Id == projectId).FirstAsync()),
+            AuthorId = userId,
+            StatusId = (await context.FacetItems.Where(i => i.Code == "Analysis").FirstAsync()).Id
+        };
+
+        if (dto.Id != default)
+            projectTask =
+                await
+                    context
+                        .ProjectTasks
+                        .Include(i => i.Project)
+                        .Where(i => i.Id == dto.Id)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанную задачу.");
+
         if (
-            projectTask.Project.StudentId != userId ||
-            projectTask.Project.TeacherId != userId ||
+            projectTask.Project.StudentId != userId &&
+            projectTask.Project.TeacherId != userId &&
             !User.IsInRole(ROLES_ADMIN)
         )
             throw new NoRightsException();
@@ -132,10 +150,12 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { projectId = projectId });
     }
 
     [HttpPost]
-    public async Task Delete(int id)
+    public async Task<RedirectToActionResult> Delete(int id)
     {
         var projectTask =
             await
@@ -149,8 +169,8 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
         if (
-            projectTask.Project.StudentId != userId ||
-            projectTask.Project.TeacherId != userId ||
+            projectTask.Project.StudentId != userId &&
+            projectTask.Project.TeacherId != userId &&
             !User.IsInRole(ROLES_ADMIN)
         )
             throw new NoRightsException();
@@ -160,5 +180,7 @@ public class ProjectTaskController(DdmsDbContext context, UserService userServic
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { projectId = projectTask.ProjectId });
     }
 }

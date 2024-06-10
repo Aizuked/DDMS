@@ -17,6 +17,7 @@ public partial class ChatEditDtoProfile : Profile
         CreateMap<ChatEditDto, Chat>()
             .ForMember(i => i.Project, opt => opt.Ignore())
             .ForMember(i => i.Messages, opt => opt.Ignore())
-            .ForMember(i => i.Participants, opt => opt.MapFrom(j => j.ParticipantIds));
+            .ForMember(i => i.Participants, opt => opt.MapFrom(j => j.ParticipantIds))
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

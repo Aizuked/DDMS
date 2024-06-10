@@ -21,6 +21,7 @@ public partial class SuggestedThemeEditDtoProfile : Profile
         CreateMap<SuggestedThemeEditDto, SuggestedTheme>()
             .ForMember(i => i.Id, opt => opt.Ignore())
             .ForMember(i => i.UserId, opt => opt.Ignore())
-            .ForMember(i => i.User, opt => opt.Ignore());
+            .ForMember(i => i.User, opt => opt.Ignore())
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

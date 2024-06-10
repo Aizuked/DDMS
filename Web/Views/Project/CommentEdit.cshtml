@@ -7,14 +7,16 @@ ViewData["Title"] = "Редактировать комментарий";
 <div class="container mt-5">
     <h1 class="mb-4">Редактировать комментарий</h1>
     <form method="post" asp-action="Edit">
-        <input type="hidden" name="Id" value="@Model.CommentEditDto.Id">
+        @Html.HiddenFor(model => model.CommentEditDto.Id)
         <div class="mb-3">
-            <label for="Text" class="form-label">Текст</label>
-            <textarea class="form-control" id="Text" name="Text" rows="3">@Model.CommentEditDto.Text</textarea>
+            <label asp-for="CommentEditDto.Text" class="form-label"></label>
+            <textarea asp-for="CommentEditDto.Text" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="CommentEditDto.Text" class="text-danger"></span>
         </div>
-        <div class="mb-3">
-            <label for="IsPrivate" class="form-label">Приватный</label>
-            <input type="checkbox" class="form-check-input" id="IsPrivate" name="IsPrivate" @(Model.CommentEditDto.IsPrivate ? "checked" : "")>
+        <div class="mb-3 form-check">
+            <input asp-for="CommentEditDto.IsPrivate" class="form-check-input" />
+            <label asp-for="CommentEditDto.IsPrivate" class="form-check-label"></label>
+            <span asp-validation-for="CommentEditDto.IsPrivate" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <a asp-action="List" asp-controller="Project" class="btn btn-secondary">Отмена</a>

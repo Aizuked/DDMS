@@ -43,6 +43,7 @@ public partial class UserEditDtoProfile : Profile
             .ForMember(i => i.TwoFactorEnabled, opt => opt.Ignore())
             .ForMember(i => i.LockoutEnd, opt => opt.Ignore())
             .ForMember(i => i.LockoutEnabled, opt => opt.Ignore())
-            .ForMember(i => i.AccessFailedCount, opt => opt.Ignore());
+            .ForMember(i => i.AccessFailedCount, opt => opt.Ignore())
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

@@ -36,8 +36,9 @@ public class FacetController(DdmsDbContext context, UserService userService, IMa
     }
 
     [HttpPost]
-    public async Task Edit(FacetEditDto dto)
+    public async Task<RedirectToActionResult> Edit(FacetEditViewModel vm)
     {
+        var dto = vm.FacetEditDto;
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
 
@@ -53,5 +54,7 @@ public class FacetController(DdmsDbContext context, UserService userService, IMa
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction("List", "FacetItem", new { area = "Facet" });
     }
 }

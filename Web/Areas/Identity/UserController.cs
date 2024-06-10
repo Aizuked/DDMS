@@ -65,8 +65,9 @@ public class UserController(DdmsDbContext context, UserService userService, IMap
     }
 
     [HttpPost]
-    public async Task Edit(UserEditDto dto)
+    public async Task<RedirectToActionResult> Edit(UserEditViewModel vm)
     {
+        var dto = vm.UserEditDto;
         if (!await userService.OwnsOrInRole(User, dto.Id, ROLES_ADMIN))
             throw new NoRightsException();
 
@@ -76,5 +77,7 @@ public class UserController(DdmsDbContext context, UserService userService, IMap
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(Details), new { id = dto.Id });
     }
 }

@@ -18,7 +18,7 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
     public async Task<IActionResult> List(ListPaginationFilter filter)
     {
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
@@ -47,22 +47,25 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
         return View(viewModel);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int? id)
     {
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
 
-        var localFileGroupEditDto =
-            await
-                context
-                    .LocalFileGroups
-                    .Where(i => i.Id == id)
-                    .ProjectTo<LocalFileGroupEditDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
+        LocalFileGroupEditDto localFileGroupEditDto = new();
+
+        if (id.HasValue)
+            localFileGroupEditDto =
+                await
+                    context
+                        .LocalFileGroups
+                        .Where(i => i.Id == id)
+                        .ProjectTo<LocalFileGroupEditDto>(mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанную группу файлов.");
 
         var viewModel = new LocalFileGroupEditViewModel
         {
@@ -73,10 +76,11 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
     }
 
     [HttpPost]
-    public async Task Edit(LocalFileGroupEditDto dto)
+    public async Task<RedirectToActionResult> Edit(LocalFileGroupEditViewModel vm)
     {
+        var dto = vm.LocalFileGroupEditDto;
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
@@ -93,13 +97,15 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 
     [HttpPost]
-    public async Task Delete(int id)
+    public async Task<RedirectToActionResult> Delete(int id)
     {
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
@@ -117,5 +123,7 @@ public class LocalFileGroupController(DdmsDbContext context, UserService userSer
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 }

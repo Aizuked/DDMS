@@ -12,19 +12,19 @@ public class ProjectDetailsDto : BaseEntityDto
 
     public bool IsPublic { get; set; }
 
-    public UserListDto Student { get; set; } = new();
+    public UserListDto? Student { get; set; }
 
-    public UserListDto Teacher { get; set; } = new();
+    public UserListDto? Teacher { get; set; }
 
     public string? TeacherJobTitle { get; set; }
 
-    public string StatusDisplayName { get; set; } = string.Empty;
+    public string? StatusDisplayName { get; set; }
 
     public string? ThemeSelectedThemeText { get; set; }
 
     public int? ThemeId { get; set; }
 
-    public bool ThemeIsApproved { get; set; }
+    public bool? ThemeIsApproved { get; set; }
 }
 
 public partial class ProjectDetailsDtoProfile : Profile

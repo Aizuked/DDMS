@@ -19,7 +19,7 @@ public class UserListDto
 
     public DateTime? LastOnline { get; set; }
 
-    public int? ProfilePicturePath { get; set; }
+    public string? ProfilePicturePath { get; set; } = string.Empty;
 }
 
 public partial class UserListDtoProfile : Profile

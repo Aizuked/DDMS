@@ -4,6 +4,7 @@ using AutoMapper.QueryableExtensions;
 using Core;
 using Core.Dto.Themes;
 using Core.Exceptions;
+using Core.Models.Themes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Web.Miscellaneous.Extensions;
@@ -43,18 +44,21 @@ public class SuggestedThemeController(DdmsDbContext context, UserService userSer
         return View(viewModel);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int? id)
     {
-        var suggestedTheme =
-            await
-                context
-                    .SuggestedThemes
-                    .Where(i => i.Id == id)
-                    .ProjectTo<SuggestedThemeEditDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанную тему.");
+        SuggestedThemeEditDto suggestedTheme = new();
 
-        if (!await userService.OwnsOrInRole(User, suggestedTheme.UserId, ROLES_TEACHER))
+        if (id.HasValue)
+            suggestedTheme =
+                await
+                    context
+                        .SuggestedThemes
+                        .Where(i => i.Id == id)
+                        .ProjectTo<SuggestedThemeEditDto>(mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанную тему.");
+
+        if (!await userService.OwnsOrInRole(User, suggestedTheme.UserId, ROLES_TEACHER) && suggestedTheme.Id != default)
             throw new NoRightsException();
 
         var viewModel = new SuggestedThemeEditViewModel
@@ -66,15 +70,22 @@ public class SuggestedThemeController(DdmsDbContext context, UserService userSer
     }
 
     [HttpPost]
-    public async Task Edit(SuggestedThemeEditDto dto)
+    public async Task<RedirectToActionResult> Edit(SuggestedThemeEditViewModel vm)
     {
-        var suggestedTheme =
-            await
-                context
-                    .SuggestedThemes
-                    .Where(i => i.Id == dto.Id)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанную тему.");
+        var dto = vm.SuggestedThemeEditDto;
+        SuggestedTheme suggestedTheme = new()
+        {
+            UserId = (await userService.GetCurrentOrThrow(User)).Id
+        };
+
+        if (dto.Id != default)
+            suggestedTheme =
+                await
+                    context
+                        .SuggestedThemes
+                        .Where(i => i.Id == dto.Id)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанную тему.");
 
         if (!await userService.OwnsOrInRole(User, suggestedTheme.UserId, ROLES_TEACHER))
             throw new NoRightsException();
@@ -84,5 +95,7 @@ public class SuggestedThemeController(DdmsDbContext context, UserService userSer
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 }

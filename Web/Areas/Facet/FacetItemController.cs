@@ -41,33 +41,36 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
             FacetItemListDtos = facetItemsDtos
         };
 
-        return View(viewModel);
+        return View("FacetItemList", viewModel);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int? id)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
 
-        var facetItem =
-            await
-                context
-                    .FacetItems
-                    .Where(i => i.Id == id)
-                    .ProjectTo<FacetItemEditDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанный элемент справочника.");
+        FacetItemEditDto facetItem = new();
+
+        if (id.HasValue)
+            facetItem =
+                await
+                    context
+                        .FacetItems
+                        .Where(i => i.Id == id)
+                        .ProjectTo<FacetItemEditDto>(mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанный элемент справочника.");
 
         var viewModel = new FacetItemEditViewModel
         {
             FacetItemEditDto = facetItem
         };
 
-        return View(viewModel);
+        return View("FacetItemEdit", viewModel);
     }
 
     [HttpPost]
-    public async Task Edit(FacetItemEditDto dto)
+    public async Task<RedirectToActionResult> Edit(FacetItemEditDto dto)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
@@ -84,10 +87,12 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 
     [HttpPost]
-    public async Task Delete(int id)
+    public async Task<RedirectToActionResult> Delete(int id)
     {
         if (!User.IsInRole(ROLES_ADMIN))
             throw new NoRightsException();
@@ -109,5 +114,7 @@ public class FacetItemController(DdmsDbContext context, UserService userService,
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 }

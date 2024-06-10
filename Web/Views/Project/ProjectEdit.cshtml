@@ -1,0 +1,44 @@
+﻿@model Web.Viewmodels.Projects.ProjectEditViewModel
+
+@{
+ViewData["Title"] = "Редактировать проект";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Редактировать проект</h1>
+    <form method="post" asp-action="Edit">
+        @Html.HiddenFor(model => model.ProjectEditDto.Id)
+        <div class="mb-3">
+            <label asp-for="ProjectEditDto.Code" class="form-label"></label>
+            <input asp-for="ProjectEditDto.Code" class="form-control" />
+            <span asp-validation-for="ProjectEditDto.Code" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProjectEditDto.DisplayName" class="form-label"></label>
+            <input asp-for="ProjectEditDto.DisplayName" class="form-control" />
+            <span asp-validation-for="ProjectEditDto.DisplayName" class="text-danger"></span>
+        </div>
+        <div class="mb-3 form-check">
+            <input asp-for="ProjectEditDto.IsPublic" class="form-check-input" />
+            <label asp-for="ProjectEditDto.IsPublic" class="form-check-label"></label>
+            <span asp-validation-for="ProjectEditDto.IsPublic" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProjectEditDto.StudentId" class="form-label"></label>
+            <input asp-for="ProjectEditDto.StudentId" class="form-control" />
+            <span asp-validation-for="ProjectEditDto.StudentId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProjectEditDto.TeacherId" class="form-label"></label>
+            <input asp-for="ProjectEditDto.TeacherId" class="form-control" />
+            <span asp-validation-for="ProjectEditDto.TeacherId" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="ProjectEditDto.StatusId" class="form-label"></label>
+            <input asp-for="ProjectEditDto.StatusId" class="form-control" />
+            <span asp-validation-for="ProjectEditDto.StatusId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a asp-action="List" asp-controller="Project" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>

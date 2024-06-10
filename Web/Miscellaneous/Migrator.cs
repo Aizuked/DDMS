@@ -1,9 +1,13 @@
 ﻿using System.Collections.Immutable;
 using Core;
+using Core.Models.Chats;
 using Core.Models.Facets;
 using Core.Models.Identity;
+using Core.Models.Projects;
+using Core.Models.Themes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 
 namespace Web.Miscellaneous;
 
@@ -36,6 +40,9 @@ public static class Migrator
 
         await SeedFacets(context);
         await SeedIdentityRoles(context, scope);
+        await SeedChats(context);
+        await SeedThemes(context);
+        await SeedProjects(context);
     }
 
     private async static Task SeedFacets(DdmsDbContext context)
@@ -366,6 +373,382 @@ public static class Migrator
         };
 
         context.AddRange(identityUserRoles);
+        await context.SaveChangesAsync();
+    }
+
+    private async static Task SeedChats(DdmsDbContext context)
+    {
+        var userQuery =
+            from u in context.Users
+            join ur in context.UserRoles on u.Id equals ur.UserId
+            join r in context.Roles on ur.RoleId equals r.Id
+            select new
+            {
+                u,
+                r.Name
+            };
+
+        var student =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_STUDENT)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var teacher =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_TEACHER)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var chats = new List<Chat>
+        {
+            new()
+            {
+                Participants = new List<User>
+                {
+                    student,
+                    teacher
+                }
+            },
+            new()
+            {
+                Participants = new List<User>
+                {
+                    student,
+                    teacher
+                }
+            },
+        };
+
+        context.AddRange(chats);
+        await context.SaveChangesAsync();
+
+        student.UserChats.AddRange(chats);
+        teacher.UserChats.AddRange(chats);
+        await context.SaveChangesAsync();
+
+        var messages = new List<Message>
+        {
+            new()
+            {
+                Content = "Здравствуйте",
+                SenderId = student.Id,
+            },
+            new()
+            {
+                Content = "Здравствуйте",
+                SenderId = teacher.Id,
+            },
+            new()
+            {
+                Content = "Так и так",
+                SenderId = student.Id,
+            },
+            new()
+            {
+                Content = "Ну да, так и так",
+                SenderId = teacher.Id,
+            },
+            new()
+            {
+                Content = "А может не так?",
+                SenderId = student.Id,
+            },
+            new()
+            {
+                Content = "Да",
+                SenderId = teacher.Id,
+            },
+        };
+
+        context.AddRange(messages);
+        await context.SaveChangesAsync();
+
+        chats.First().Messages.AddRange(messages);
+        await context.SaveChangesAsync();
+    }
+
+    private async static Task SeedThemes(DdmsDbContext context)
+    {
+        var keyWords = new List<KeyWord>
+        {
+            new()
+            {
+                Word = "веб-сервис",
+                IsApproved = true,
+                IsProven = false
+            },
+            new()
+            {
+                Word = ".NET",
+                IsApproved = true,
+                IsProven = false
+            },
+            new()
+            {
+                Word = "ИТ",
+                IsApproved = true,
+                IsProven = false
+            },
+            new()
+            {
+                Word = "проектирование",
+                IsApproved = true,
+                IsProven = false
+            },
+        };
+
+        context.AddRange(keyWords);
+        await context.SaveChangesAsync();
+
+        var userQuery =
+            from u in context.Users
+            join ur in context.UserRoles on u.Id equals ur.UserId
+            join r in context.Roles on ur.RoleId equals r.Id
+            select new
+            {
+                u,
+                r.Name
+            };
+
+        var student =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_STUDENT)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var teacher =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_TEACHER)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var suggestedTheme = new SuggestedTheme
+        {
+            Text = "Разработка веб-сервиса поддержки управления дипломным проектирование по ИТ-тематике",
+            UserId = student.Id,
+            KeyWords = keyWords
+        };
+
+        context.Add(suggestedTheme);
+        await context.SaveChangesAsync();
+
+        var theme = new Theme
+        {
+            IsApproved = true,
+            SelectedThemeId = suggestedTheme.Id,
+            ApproverId = teacher.Id,
+        };
+
+        context.Add(theme);
+        await context.SaveChangesAsync();
+    }
+
+    private async static Task SeedProjects(DdmsDbContext context)
+    {
+        var userQuery =
+            from u in context.Users
+            join ur in context.UserRoles on u.Id equals ur.UserId
+            join r in context.Roles on ur.RoleId equals r.Id
+            select new
+            {
+                u,
+                r.Name
+            };
+
+        var student =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_STUDENT)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var teacher =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_TEACHER)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var status =
+            await
+                context
+                    .FacetItems
+                    .Where(i => i.Code == "WorkInProhgressProgramme")
+                    .FirstAsync();
+
+        var theme =
+            await
+                context
+                    .Themes
+                    .FirstAsync();
+
+        var projects = new List<Project>
+        {
+            new()
+            {
+                Code = "DDMS",
+                DisplayName = "Системе управления проектированием дипломов",
+                IsPublic = false,
+                StudentId = student.Id,
+                TeacherId = teacher.Id,
+                StatusId = status.Id,
+                ThemeId = theme.Id,
+            },
+            new()
+            {
+                Code = "Haha",
+                DisplayName = "Просто другой проект",
+                IsPublic = false,
+                StudentId = student.Id,
+                TeacherId = teacher.Id,
+                StatusId = status.Id,
+                ThemeId = null,
+            },
+        };
+        context.AddRange(projects);
+        await context.SaveChangesAsync();
+
+        var ddms = projects.First(i => i.Code == "DDMS");
+
+        var projectTaskStatuses =
+            context
+                .FacetItems;
+
+        var ptAnalysis =
+            await
+                projectTaskStatuses
+                    .Where(i => i.Code == "Analysis")
+                    .Select(i => i.Id)
+                    .FirstAsync();
+
+        var ptWorkInProgress =
+            await
+                projectTaskStatuses
+                    .Where(i => i.Code == "WorkInProgress")
+                    .Select(i => i.Id)
+                    .FirstAsync();
+
+        var ptReview =
+            await
+                projectTaskStatuses
+                    .Where(i => i.Code == "Review")
+                    .Select(i => i.Id)
+                    .FirstAsync();
+
+        var projectTasks = new List<ProjectTask>
+        {
+            new()
+            {
+                DisplayName = "Сформировать записку",
+                Description = null,
+                Readiness = 10,
+                DateTimeStart = new DateTime(2024, 5, 23).ToUniversalTime(),
+                DateTimeEnd = null,
+                ParentTaskId = null,
+                ProjectId = ddms.Id,
+                StatusId = ptAnalysis,
+                AuthorId = student.Id,
+            },
+            new()
+            {
+                DisplayName = "Написать программу",
+                Description = null,
+                Readiness = 40,
+                DateTimeStart = new DateTime(2024, 3, 1).ToUniversalTime(),
+                DateTimeEnd = null,
+                ParentTaskId = null,
+                ProjectId = ddms.Id,
+                StatusId = ptWorkInProgress,
+                AuthorId = student.Id,
+            },
+        };
+
+        context.AddRange(projectTasks);
+        await context.SaveChangesAsync();
+
+        var dependantTask =
+            new ProjectTask
+            {
+                DisplayName = "Сформировать требования",
+                Description = "Требуется провести анализ и сформировать структурированный список требований",
+                Readiness = 100,
+                DateTimeStart = new DateTime(2024, 1, 12).ToUniversalTime(),
+                DateTimeEnd = new DateTime(2024, 1, 14).ToUniversalTime(),
+                ParentTaskId = projectTasks.Where(i => i.Readiness == 10).Select(i => i.Id).First(),
+                ProjectId = ddms.Id,
+                StatusId = ptReview,
+                AuthorId = student.Id,
+            };
+
+        context.Add(dependantTask);
+        await context.SaveChangesAsync();
+    }
+
+    private async static Task SeedComments(DdmsDbContext context)
+    {
+        var userQuery =
+            from u in context.Users
+            join ur in context.UserRoles on u.Id equals ur.UserId
+            join r in context.Roles on ur.RoleId equals r.Id
+            select new
+            {
+                u,
+                r.Name
+            };
+
+        var student =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_STUDENT)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var teacher =
+            await
+                userQuery
+                    .Where(i => i.Name == ROLES_TEACHER)
+                    .Select(i => i.u)
+                    .FirstAsync();
+
+        var comments = new List<Comment>
+        {
+            new()
+            {
+                Text = "Нормально?",
+                IsPrivate = false,
+                AuthorId = student.Id,
+            },
+            new()
+            {
+                Text = "Нормально",
+                IsPrivate = false,
+                AuthorId = teacher.Id,
+            },
+            new()
+            {
+                Text = "ого",
+                IsPrivate = false,
+                AuthorId = teacher.Id,
+            },
+        };
+
+        context.Add(comments);
+        await context.SaveChangesAsync();
+
+        var projectTask =
+            await
+                context
+                    .ProjectTasks
+                    .Where(i => i.DisplayName == "Сформировать требования")
+                    .Include(projectTask => projectTask.Comments)
+                    .FirstAsync();
+
+        projectTask.Comments.AddRange(comments);
         await context.SaveChangesAsync();
     }
 }

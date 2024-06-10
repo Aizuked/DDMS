@@ -18,7 +18,7 @@ public class KeyWordController(DdmsDbContext context, UserService userService, I
     public async Task<IActionResult> List(string term, ListPaginationFilter filter)
     {
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
@@ -52,7 +52,7 @@ public class KeyWordController(DdmsDbContext context, UserService userService, I
         return View(viewModel);
     }
 
-    public async Task<JsonResult> List(string term)
+    public async Task<JsonResult> List(string? term)
     {
         var filter = new ListPaginationFilter();
 
@@ -79,10 +79,10 @@ public class KeyWordController(DdmsDbContext context, UserService userService, I
     }
 
     [HttpPost]
-    public async Task ToggleApprove(int id)
+    public async Task<RedirectToActionResult> ToggleApprove(int id)
     {
         if (
-            !User.IsInRole(ROLES_ADMIN) ||
+            !User.IsInRole(ROLES_ADMIN) &&
             !User.IsInRole(ROLES_TEACHER)
         )
             throw new NoRightsException();
@@ -105,5 +105,7 @@ public class KeyWordController(DdmsDbContext context, UserService userService, I
             throw new NotifiableException("Не удалось найти указанное ключевое слово.");
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 }

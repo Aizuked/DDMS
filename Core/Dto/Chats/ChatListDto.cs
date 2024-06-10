@@ -12,7 +12,7 @@ public class ChatListDto : BaseEntityDto
 
     public string? ProjectDisplayName { get; set; }
 
-    public MessageListDto LastMessage { get; set; } = new();
+    public MessageListDto? LastMessage { get; set; } = new();
 
     public ICollection<UserListDto> Participants { get; set; } = [];
 }

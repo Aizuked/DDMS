@@ -25,6 +25,7 @@ public partial class QuestionnaireEditDtoProfile : Profile
             .ForMember(i => i.Created, opt => opt.Ignore())
             .ForMember(i => i.Updated, opt => opt.Ignore())
             .ForMember(i => i.ParticipationCount, opt => opt.Ignore())
-            .ForMember(i => i.Questions, opt => opt.MapFrom(j => j.QuestionIds));
+            .ForMember(i => i.Questions, opt => opt.MapFrom(j => j.QuestionIds))
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember is not null));
     }
 }

@@ -1,16 +1,17 @@
 ﻿@model Web.Viewmodels.Themes.SuggestedThemeEditViewModel
 
 @{
-ViewData["Title"] = "Редактировать предложенную тему";
+    ViewData["Title"] = "Редактировать предложенную тему";
 }
 
 <div class="container mt-5">
     <h1 class="mb-4">Редактировать предложенную тему</h1>
     <form method="post" asp-action="Edit">
-        <input type="hidden" name="Id" value="@Model.SuggestedThemeEditDto.Id">
+        @Html.HiddenFor(model => model.SuggestedThemeEditDto.Id)
         <div class="mb-3">
-            <label for="Text" class="form-label">Тема</label>
-            <textarea class="form-control" id="Text" name="Text" rows="3">@Model.SuggestedThemeEditDto.Text</textarea>
+            <label asp-for="SuggestedThemeEditDto.Text" class="form-label"></label>
+            <textarea asp-for="SuggestedThemeEditDto.Text" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="SuggestedThemeEditDto.Text" class="text-danger"></span>
         </div>
         <button type="submit" class="btn btn-primary">Сохранить</button>
         <a asp-action="List" asp-controller="SuggestedTheme" class="btn btn-secondary">Отмена</a>

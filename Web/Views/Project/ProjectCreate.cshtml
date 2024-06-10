@@ -1,0 +1,36 @@
+﻿@model Web.Viewmodels.Projects.ProjectEditViewModel
+
+@{
+    ViewData["Title"] = "Создать проект";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Создать проект</h1>
+    <form method="post" asp-action="Edit">
+        <div class="mb-3">
+            <label for="Code" class="form-label">Код</label>
+            <input type="text" class="form-control" id="Code" name="Code" value="@Model.ProjectEditDto.Code">
+        </div>
+        <div class="mb-3">
+            <label for="DisplayName" class="form-label">Название</label>
+            <input type="text" class="form-control" id="DisplayName" name="DisplayName" value="@Model.ProjectEditDto.DisplayName">
+        </div>
+        <div class="mb-3">
+            <label for="IsPublic" class="form-label">Публичный</label>
+            <input type="checkbox" class="form-check-input" id="IsPublic" name="IsPublic" @(Model.ProjectEditDto.IsPublic ? "checked" : "")>
+        </div>
+        <div class="mb-3">
+            <label for="StudentId" class="form-label">Студент</label>
+            <input type="number" class="form-control" id="StudentId" name="StudentId" value="@Model.ProjectEditDto.StudentId">
+        </div>
+        <div class="mb-3">
+            <label for="TeacherId" class="form-label">Преподаватель</label>
+            <input type="number" class="form-control" id="TeacherId" name="TeacherId" value="@Model.ProjectEditDto.TeacherId">
+        </div>
+        <div class="mb-3">
+            <label for="StatusId" class="form-label">Статус</label>
+            <input type="number" class="form-control" id="StatusId" name="StatusId" value="@Model.ProjectEditDto.StatusId">
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+</div>

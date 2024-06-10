@@ -49,7 +49,7 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
             ProjectListDtos = projectListDtos
         };
 
-        return View(viewModel);
+        return View("ProjectList", viewModel);
     }
 
     public async Task<IActionResult> Details(int id)
@@ -59,6 +59,10 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
                 context
                     .Projects
                     .Where(i => i.Id == id)
+                    .Include(i => i.Student)
+                    .Include(i => i.Teacher)
+                    .Include(i => i.Status)
+                    .Include(i => i.Theme)
                     .ProjectTo<ProjectDetailsDto>(mapper.ConfigurationProvider)
                     .FirstOrDefaultAsync()
             ?? throw new NotifiableException("Не удалось найти указанный проект.");
@@ -69,31 +73,35 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
         {
             CanEdit =
                 User.IsInRole(ROLES_ADMIN) ||
-                project.Teacher.Id == userId ||
-                project.Student.Id == userId,
+                project.Teacher?.Id == userId ||
+                project.Student?.Id == userId,
             ProjectDetailsDto = project
         };
 
-        return View(viewModel);
+        return View("ProjectDetails", viewModel);
     }
 
-    public async Task<IActionResult> Edit(int id)
+    public async Task<IActionResult> Edit(int? id)
     {
-        var project =
-            await
-                context
-                    .Projects
-                    .Where(i => i.Id == id)
-                    .ProjectTo<ProjectEditDto>(mapper.ConfigurationProvider)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанный проект.");
+        ProjectEditDto project = new();
+
+        if (id.HasValue)
+            project =
+                await
+                    context
+                        .Projects
+                        .Where(i => i.Id == id)
+                        .ProjectTo<ProjectEditDto>(mapper.ConfigurationProvider)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанный проект.");
 
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
         if (
-            project.StudentId != userId ||
-            project.TeacherId != userId ||
-            !User.IsInRole(ROLES_ADMIN)
+            project.StudentId != userId &&
+            project.TeacherId != userId &&
+            !User.IsInRole(ROLES_ADMIN) &&
+            project.Id != default
         )
             throw new NoRightsException();
 
@@ -102,25 +110,34 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
             ProjectEditDto = project
         };
 
-        return View(viewModel);
+        return View("ProjectEdit", viewModel);
     }
 
     [HttpPost]
-    public async Task Edit(ProjectEditDto dto)
+    public async Task<RedirectToActionResult> Edit(ProjectEditViewModel vm)
     {
-        var project =
-            await
-                context
-                    .Projects
-                    .Where(i => i.Id == dto.Id)
-                    .FirstOrDefaultAsync()
-            ?? throw new NotifiableException("Не удалось найти указанный проект.");
-
+        var dto = vm.ProjectEditDto;
         var userId = (await userService.GetCurrentOrThrow(User)).Id;
 
+        Core.Models.Projects.Project project = new()
+        {
+            StudentId = userId,
+            StatusId = (await context.FacetItems.Where(i => i.Code == "Discussion").FirstAsync()).Id,
+            TeacherId = vm.ProjectEditDto.TeacherId
+        };
+
+        if (dto.Id != default)
+            project =
+                await
+                    context
+                        .Projects
+                        .Where(i => i.Id == dto.Id)
+                        .FirstOrDefaultAsync()
+                ?? throw new NotifiableException("Не удалось найти указанный проект.");
+
         if (
-            project.StudentId != userId ||
-            project.TeacherId != userId ||
+            project.StudentId != userId &&
+            project.TeacherId != userId &&
             !User.IsInRole(ROLES_ADMIN)
         )
             throw new NoRightsException();
@@ -129,10 +146,12 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 
     [HttpPost]
-    public async Task SelectTheme(int projectId, int suggestedThemeId)
+    public async Task<RedirectToActionResult> SelectTheme(int projectId, int suggestedThemeId)
     {
         var project =
             await
@@ -183,10 +202,12 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
         }
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 
     [HttpPost]
-    public async Task ApproveTheme(int id)
+    public async Task<RedirectToActionResult> ApproveTheme(int id)
     {
         var theme =
             await
@@ -197,7 +218,7 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
             ?? throw new NotifiableException("Не удалось найти указанную тему.");
 
         if (theme.IsApproved)
-            return;
+            return RedirectToAction(nameof(List), new { });
 
         var project =
             await
@@ -223,5 +244,7 @@ public class ProjectController(DdmsDbContext context, UserService userService, I
         await context.SaveChangesAsync();
 
         toastify.Success(NOTIFY_SUCCESS);
+
+        return RedirectToAction(nameof(List), new { });
     }
 }
